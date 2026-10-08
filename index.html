@@ -348,10 +348,10 @@ select{
 }
 
 .signal-box{
-    min-height:210px;
+    min-height:245px;
     border-radius:22px;
     background:
-        radial-gradient(circle at 50% 20%,rgba(48,235,151,.1),transparent 55%),
+        radial-gradient(circle at 50% 15%,rgba(48,235,151,.12),transparent 50%),
         #050e0a;
     border:1px solid rgba(59,238,157,.12);
     display:flex;
@@ -366,17 +366,116 @@ select{
 .signal-box::before{
     content:"";
     position:absolute;
-    width:190px;
-    height:190px;
+    width:215px;
+    height:215px;
     border-radius:50%;
-    border:1px solid rgba(55,240,157,.05);
+    border:1px solid rgba(55,240,157,.06);
+    box-shadow:
+        0 0 60px rgba(55,240,157,.03),
+        inset 0 0 40px rgba(55,240,157,.02);
+}
+
+/* 3D SIGNAL ICON */
+
+.signal-3d{
+    width:92px;
+    height:92px;
+    border-radius:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    transform:perspective(500px) rotateX(7deg) rotateY(-7deg);
+    margin-bottom:13px;
+    z-index:2;
+    transition:.3s ease;
+}
+
+.signal-3d::before{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border-radius:22px;
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.signal-3d::after{
+    content:"";
+    position:absolute;
+    inset:-8px;
+    border-radius:32px;
+    filter:blur(16px);
+    opacity:.3;
+    z-index:-1;
+}
+
+.signal-3d .arrow{
+    font-size:42px;
+    line-height:1;
+    font-weight:1000;
+    position:relative;
+    z-index:3;
+    text-shadow:
+        2px 3px 0 rgba(0,0,0,.35),
+        0 0 20px rgba(255,255,255,.15);
+}
+
+.signal-3d.wait{
+    background:
+        linear-gradient(145deg,#273a31,#0b1711);
+    box-shadow:
+        0 14px 0 #030806,
+        0 20px 35px rgba(0,0,0,.5),
+        inset 3px 3px 10px rgba(255,255,255,.08);
+}
+
+.signal-3d.wait .arrow{
+    color:#91a79b;
+}
+
+.signal-3d.call{
+    background:
+        linear-gradient(145deg,#6affba 0%,#17c87e 48%,#087346 100%);
+    box-shadow:
+        0 12px 0 #075a39,
+        0 20px 45px rgba(21,229,139,.25),
+        inset 4px 4px 12px rgba(255,255,255,.32),
+        inset -5px -6px 12px rgba(0,0,0,.2);
+}
+
+.signal-3d.call::after{
+    background:#26f09a;
+}
+
+.signal-3d.call .arrow{
+    color:#032516;
+}
+
+.signal-3d.put{
+    background:
+        linear-gradient(145deg,#ff8787 0%,#e83e4e 48%,#8b1724 100%);
+    box-shadow:
+        0 12px 0 #731522,
+        0 20px 45px rgba(255,61,76,.25),
+        inset 4px 4px 12px rgba(255,255,255,.3),
+        inset -5px -6px 12px rgba(0,0,0,.2);
+}
+
+.signal-3d.put::after{
+    background:#ff4e61;
+}
+
+.signal-3d.put .arrow{
+    color:#2b0509;
 }
 
 .signal-label{
-    font-size:39px;
+    font-size:35px;
     font-weight:1000;
     letter-spacing:3px;
     position:relative;
+    z-index:2;
 }
 
 .signal-label.wait{
@@ -398,6 +497,7 @@ select{
     font-size:10px;
     margin-top:7px;
     position:relative;
+    z-index:2;
 }
 
 .confidence{
@@ -415,6 +515,7 @@ select{
         conic-gradient(#3cf0a0 var(--confidence),rgba(255,255,255,.06) 0);
     font-size:11px;
     font-weight:900;
+    z-index:4;
 }
 
 .signal-timing{
@@ -587,6 +688,10 @@ select{
     color:#e1c76a;
 }
 
+.history-result.pending{
+    color:#d6d96e;
+}
+
 .empty-history{
     text-align:center;
     padding:18px;
@@ -594,11 +699,11 @@ select{
     font-size:10px;
 }
 
-/* BUTTON */
+/* GENERATE BUTTON */
 
 .analyze-btn{
     width:100%;
-    height:51px;
+    height:53px;
     margin-top:13px;
     border:none;
     border-radius:15px;
@@ -606,13 +711,31 @@ select{
     color:#031009;
     font-size:11px;
     font-weight:900;
-    letter-spacing:.5px;
+    letter-spacing:.7px;
     cursor:pointer;
     box-shadow:0 10px 30px rgba(34,221,141,.12);
+    transition:.2s ease;
+}
+
+.analyze-btn:hover{
+    filter:brightness(1.08);
 }
 
 .analyze-btn:active{
     transform:scale(.98);
+}
+
+.analyze-btn.running{
+    background:linear-gradient(135deg,#1e4033,#10271e);
+    color:#5eeaa8;
+    border:1px solid rgba(65,239,162,.2);
+    cursor:not-allowed;
+}
+
+.analyze-btn.waiting{
+    background:linear-gradient(135deg,#263c32,#10231a);
+    color:#9cc5b1;
+    cursor:wait;
 }
 
 /* MENU */
@@ -654,9 +777,8 @@ select{
     margin-top:22px;
 }
 
-/* MOBILE */
-
 @media(max-width:420px){
+
     body{
         padding:10px 9px 30px;
     }
@@ -666,7 +788,16 @@ select{
     }
 
     .signal-label{
-        font-size:34px;
+        font-size:32px;
+    }
+
+    .signal-3d{
+        width:84px;
+        height:84px;
+    }
+
+    .signal-3d .arrow{
+        font-size:38px;
     }
 
     .current-price{
@@ -678,7 +809,7 @@ select{
 
 <body>
 
-<!-- ACCESS SCREEN -->
+<!-- ACCESS -->
 
 <div class="access-screen" id="accessScreen">
 
@@ -709,7 +840,7 @@ select{
 </div>
 
 
-<!-- MAIN APP -->
+<!-- MAIN -->
 
 <div class="app" id="mainApp">
 
@@ -731,8 +862,6 @@ select{
     </div>
 
 
-    <!-- MENU -->
-
     <div class="menu-panel" id="menuPanel">
 
         <div class="menu-item">
@@ -748,13 +877,13 @@ select{
         </div>
 
         <div class="menu-item">
-            FOREX MARKET
+            DEEP ANALYSIS
         </div>
 
     </div>
 
 
-    <!-- LIVE SIGNAL -->
+    <!-- LIVE -->
 
     <div class="card live-card">
 
@@ -771,8 +900,6 @@ select{
 
         </div>
 
-
-        <!-- PAIR -->
 
         <div class="pair-card">
 
@@ -795,7 +922,7 @@ select{
                 </div>
 
                 <div class="pair-arrow">
-                   ⌄
+                    ⌄
                 </div>
 
             </div>
@@ -828,7 +955,7 @@ select{
     </div>
 
 
-    <!-- SIGNAL CARD -->
+    <!-- SIGNAL -->
 
     <div class="card signal-card">
 
@@ -839,7 +966,7 @@ select{
             </div>
 
             <div class="signal-status" id="signalStatus">
-                ANALYZING
+                READY
             </div>
 
         </div>
@@ -852,8 +979,26 @@ select{
                 id="confidenceRing"
                 style="--confidence:0deg;"
             >
-                <span id="confidenceText">0%</span>
+                <span id="confidenceText">
+                    0%
+                </span>
             </div>
+
+
+            <!-- 3D ICON -->
+
+            <div
+                class="signal-3d wait"
+                id="signal3D"
+            >
+                <div
+                    class="arrow"
+                    id="signalArrow"
+                >
+                    —
+                </div>
+            </div>
+
 
             <div
                 class="signal-label wait"
@@ -862,11 +1007,12 @@ select{
                 WAIT
             </div>
 
+
             <div
                 class="signal-desc"
                 id="signalDescription"
             >
-                Collecting market data
+                Press Generate Signal
             </div>
 
         </div>
@@ -912,7 +1058,7 @@ select{
                 class="explanation-text"
                 id="explanation"
             >
-                Waiting for enough 1-minute market data.
+                Select a pair and press Generate Signal.
             </div>
 
         </div>
@@ -920,7 +1066,7 @@ select{
     </div>
 
 
-    <!-- AI ANALYSIS -->
+    <!-- ANALYSIS -->
 
     <div class="card analysis-card">
 
@@ -931,54 +1077,23 @@ select{
         <div class="analysis-grid">
 
             <div class="analysis-item">
-
-                <span>
-                    TREND
-                </span>
-
-                <strong id="trendValue">
-                    —
-                </strong>
-
+                <span>TREND</span>
+                <strong id="trendValue">—</strong>
             </div>
 
-
             <div class="analysis-item">
-
-                <span>
-                    PATTERN
-                </span>
-
-                <strong id="patternValue">
-                    —
-                </strong>
-
+                <span>PATTERN</span>
+                <strong id="patternValue">—</strong>
             </div>
 
-
             <div class="analysis-item">
-
-                <span>
-                    SUPPORT
-                </span>
-
-                <strong id="supportValue">
-                    —
-                </strong>
-
+                <span>SUPPORT</span>
+                <strong id="supportValue">—</strong>
             </div>
 
-
             <div class="analysis-item">
-
-                <span>
-                    RESISTANCE
-                </span>
-
-                <strong id="resistanceValue">
-                    —
-                </strong>
-
+                <span>RESISTANCE</span>
+                <strong id="resistanceValue">—</strong>
             </div>
 
         </div>
@@ -986,7 +1101,7 @@ select{
     </div>
 
 
-    <!-- RECENT SIGNALS -->
+    <!-- RECENT -->
 
     <div class="card recent-card">
 
@@ -998,41 +1113,18 @@ select{
         <div class="stats">
 
             <div class="stat">
-
-                <strong id="wins">
-                    0
-                </strong>
-
-                <span>
-                    WINS
-                </span>
-
+                <strong id="wins">0</strong>
+                <span>WINS</span>
             </div>
 
-
             <div class="stat">
-
-                <strong id="losses">
-                    0
-                </strong>
-
-                <span>
-                    LOSSES
-                </span>
-
+                <strong id="losses">0</strong>
+                <span>LOSSES</span>
             </div>
 
-
             <div class="stat">
-
-                <strong id="accuracy">
-                    0%
-                </strong>
-
-                <span>
-                    ACCURACY
-                </span>
-
+                <strong id="accuracy">0%</strong>
+                <span>ACCURACY</span>
             </div>
 
         </div>
@@ -1052,9 +1144,10 @@ select{
 
         <button
             class="analyze-btn"
+            id="generateBtn"
             onclick="manualAnalyze()"
         >
-            ANALYZE ANOTHER CHART
+            GENERATE SIGNAL
         </button>
 
     </div>
@@ -1071,8 +1164,7 @@ select{
 
 /* =========================================================
    PECO AI
-   REAL MARKET ONLY
-   BIQUOTE REAL API
+   MANUAL 1-MINUTE SIGNAL SYSTEM
 ========================================================= */
 
 const ACCESS_KEY = "PECO 2026";
@@ -1081,178 +1173,44 @@ const REAL_API = "https://biquote.io/api/";
 
 
 /* =========================================================
-   FOREX PAIRS
+   ASSETS
 ========================================================= */
 
 const realAssets = [
 
-    {
-        name:"EUR/USD",
-        symbol:"EURUSD",
-        icon:"€"
-    },
+    {name:"EUR/USD",symbol:"EURUSD",icon:"€"},
+    {name:"GBP/USD",symbol:"GBPUSD",icon:"£"},
+    {name:"USD/JPY",symbol:"USDJPY",icon:"¥"},
+    {name:"AUD/USD",symbol:"AUDUSD",icon:"A$"},
+    {name:"USD/CAD",symbol:"USDCAD",icon:"C$"},
+    {name:"USD/CHF",symbol:"USDCHF",icon:"₣"},
+    {name:"NZD/USD",symbol:"NZDUSD",icon:"NZ$"},
 
-    {
-        name:"GBP/USD",
-        symbol:"GBPUSD",
-        icon:"£"
-    },
+    {name:"EUR/GBP",symbol:"EURGBP",icon:"€"},
+    {name:"EUR/JPY",symbol:"EURJPY",icon:"€"},
+    {name:"EUR/CHF",symbol:"EURCHF",icon:"€"},
+    {name:"EUR/AUD",symbol:"EURAUD",icon:"€"},
+    {name:"EUR/CAD",symbol:"EURCAD",icon:"€"},
+    {name:"EUR/NZD",symbol:"EURNZD",icon:"€"},
 
-    {
-        name:"USD/JPY",
-        symbol:"USDJPY",
-        icon:"¥"
-    },
+    {name:"GBP/JPY",symbol:"GBPJPY",icon:"£"},
+    {name:"GBP/CHF",symbol:"GBPCHF",icon:"£"},
+    {name:"GBP/AUD",symbol:"GBPAUD",icon:"£"},
+    {name:"GBP/CAD",symbol:"GBPCAD",icon:"£"},
+    {name:"GBP/NZD",symbol:"GBPNZD",icon:"£"},
 
-    {
-        name:"AUD/USD",
-        symbol:"AUDUSD",
-        icon:"A$"
-    },
+    {name:"AUD/JPY",symbol:"AUDJPY",icon:"A$"},
+    {name:"AUD/CAD",symbol:"AUDCAD",icon:"A$"},
+    {name:"AUD/CHF",symbol:"AUDCHF",icon:"A$"},
+    {name:"AUD/NZD",symbol:"AUDNZD",icon:"A$"},
 
-    {
-        name:"USD/CAD",
-        symbol:"USDCAD",
-        icon:"C$"
-    },
+    {name:"CAD/JPY",symbol:"CADJPY",icon:"C$"},
+    {name:"CAD/CHF",symbol:"CADCHF",icon:"C$"},
+    {name:"CHF/JPY",symbol:"CHFJPY",icon:"₣"},
 
-    {
-        name:"USD/CHF",
-        symbol:"USDCHF",
-        icon:"₣"
-    },
-
-    {
-        name:"NZD/USD",
-        symbol:"NZDUSD",
-        icon:"NZ$"
-    },
-
-    {
-        name:"EUR/GBP",
-        symbol:"EURGBP",
-        icon:"€"
-    },
-
-    {
-        name:"EUR/JPY",
-        symbol:"EURJPY",
-        icon:"€"
-    },
-
-    {
-        name:"EUR/CHF",
-        symbol:"EURCHF",
-        icon:"€"
-    },
-
-    {
-        name:"EUR/AUD",
-        symbol:"EURAUD",
-        icon:"€"
-    },
-
-    {
-        name:"EUR/CAD",
-        symbol:"EURCAD",
-        icon:"€"
-    },
-
-    {
-        name:"EUR/NZD",
-        symbol:"EURNZD",
-        icon:"€"
-    },
-
-    {
-        name:"GBP/JPY",
-        symbol:"GBPJPY",
-        icon:"£"
-    },
-
-    {
-        name:"GBP/CHF",
-        symbol:"GBPCHF",
-        icon:"£"
-    },
-
-    {
-        name:"GBP/AUD",
-        symbol:"GBPAUD",
-        icon:"£"
-    },
-
-    {
-        name:"GBP/CAD",
-        symbol:"GBPCAD",
-        icon:"£"
-    },
-
-    {
-        name:"GBP/NZD",
-        symbol:"GBPNZD",
-        icon:"£"
-    },
-
-    {
-        name:"AUD/JPY",
-        symbol:"AUDJPY",
-        icon:"A$"
-    },
-
-    {
-        name:"AUD/CAD",
-        symbol:"AUDCAD",
-        icon:"A$"
-    },
-
-    {
-        name:"AUD/CHF",
-        symbol:"AUDCHF",
-        icon:"A$"
-    },
-
-    {
-        name:"AUD/NZD",
-        symbol:"AUDNZD",
-        icon:"A$"
-    },
-
-    {
-        name:"CAD/JPY",
-        symbol:"CADJPY",
-        icon:"C$"
-    },
-
-    {
-        name:"CAD/CHF",
-        symbol:"CADCHF",
-        icon:"C$"
-    },
-
-    {
-        name:"CHF/JPY",
-        symbol:"CHFJPY",
-        icon:"₣"
-    },
-
-    {
-        name:"NZD/JPY",
-        symbol:"NZDJPY",
-        icon:"NZ$"
-    },
-
-    {
-        name:"NZD/CAD",
-        symbol:"NZDCAD",
-        icon:"NZ$"
-    },
-
-    {
-        name:"NZD/CHF",
-        symbol:"NZDCHF",
-        icon:"NZ$"
-    }
+    {name:"NZD/JPY",symbol:"NZDJPY",icon:"NZ$"},
+    {name:"NZD/CAD",symbol:"NZDCAD",icon:"NZ$"},
+    {name:"NZD/CHF",symbol:"NZDCHF",icon:"NZ$"}
 
 ];
 
@@ -1267,6 +1225,7 @@ let currentPrice = null;
 let previousPrice = null;
 
 let priceHistory = [];
+let candleHistory = [];
 
 let signal = "WAIT";
 
@@ -1287,11 +1246,13 @@ let recentSignals = [];
 let priceTimer = null;
 let countdownTimer = null;
 
-let currentRequestId = 0;
+let candleTimer = null;
 
-let lastAnalysisMinute = null;
+let pendingSignal = null;
 
 let dataLoading = false;
+
+let lastLoadedCandleTime = null;
 
 
 /* =========================================================
@@ -1334,6 +1295,12 @@ const signalDescription =
 const signalStatus =
     document.getElementById("signalStatus");
 
+const signal3D =
+    document.getElementById("signal3D");
+
+const signalArrow =
+    document.getElementById("signalArrow");
+
 const confidenceRing =
     document.getElementById("confidenceRing");
 
@@ -1372,6 +1339,9 @@ const accuracyEl =
 
 const signalHistoryEl =
     document.getElementById("signalHistory");
+
+const generateBtn =
+    document.getElementById("generateBtn");
 
 
 /* =========================================================
@@ -1421,16 +1391,15 @@ accessKey.addEventListener(
 
 function toggleMenu(){
 
-    const menu =
-        document.getElementById("menuPanel");
-
-    menu.classList.toggle("active");
+    document
+        .getElementById("menuPanel")
+        .classList.toggle("active");
 
 }
 
 
 /* =========================================================
-   POPULATE ASSET SELECT
+   ASSETS
 ========================================================= */
 
 function populateAssets(){
@@ -1449,9 +1418,7 @@ function populateAssets(){
             asset.name;
 
         if(asset.name === selectedAsset){
-
             option.selected = true;
-
         }
 
         assetSelect.appendChild(option);
@@ -1467,10 +1434,25 @@ function populateAssets(){
 
 async function changeAsset(){
 
-    const newAsset =
-        assetSelect.value;
+    if(
+        signal === "CALL" ||
+        signal === "PUT" ||
+        pendingSignal
+    ){
 
-    selectedAsset = newAsset;
+        assetSelect.value =
+            selectedAsset;
+
+        explanationEl.textContent =
+            "Wait until the current signal finishes.";
+
+        return;
+
+    }
+
+
+    selectedAsset =
+        assetSelect.value;
 
     const asset =
         getSelectedAsset();
@@ -1483,55 +1465,56 @@ async function changeAsset(){
 
     resetMarketState();
 
-    updateUI();
+    setWait(
+        "Loading fresh 1-minute market data."
+    );
 
     await loadInitialHistory();
-
-    startPricePolling();
 
 }
 
 
 /* =========================================================
-   GET SELECTED ASSET
+   SELECTED ASSET
 ========================================================= */
 
 function getSelectedAsset(){
 
     return realAssets.find(
-        asset => asset.name === selectedAsset
+        asset =>
+            asset.name === selectedAsset
     ) || realAssets[0];
 
 }
 
 
 /* =========================================================
-   RESET MARKET STATE
+   RESET
 ========================================================= */
 
 function resetMarketState(){
 
     currentPrice = null;
-
     previousPrice = null;
 
     priceHistory = [];
+    candleHistory = [];
 
     signal = "WAIT";
 
     signalExpiry = 0;
 
     lastSignalPrice = null;
-
     lastSignalDirection = null;
-
     lastSignalTime = null;
 
     signalArmed = false;
 
-    lastAnalysisMinute = null;
+    pendingSignal = null;
 
-    dataLoading = false;
+    lastLoadedCandleTime = null;
+
+    updateGenerateButton();
 
 }
 
@@ -1558,12 +1541,14 @@ async function initializePECO(){
     renderHistory();
 
     setWait(
-        "Collecting 1-minute market data"
+        "Press Generate Signal when you are ready."
     );
 
     await loadInitialHistory();
 
     startPricePolling();
+
+    startCandleWatcher();
 
     startCountdown();
 
@@ -1571,7 +1556,7 @@ async function initializePECO(){
 
 
 /* =========================================================
-   LOAD INITIAL 1-MINUTE HISTORY
+   LOAD 1-MINUTE OHLC
 ========================================================= */
 
 async function loadInitialHistory(){
@@ -1582,45 +1567,30 @@ async function loadInitialHistory(){
 
     dataLoading = true;
 
-    const requestId =
-        ++currentRequestId;
-
     const asset =
         getSelectedAsset();
 
     priceStatus.textContent =
-        "LOADING DATA";
-
-    signalStatus.textContent =
         "LOADING";
 
     try{
 
-        /*
-         Official Biquote endpoint:
-
-         /api/EURUSD/ohlc?interval=1m&limit=20
-        */
-
-        const historyUrl =
-            `${REAL_API}${asset.symbol}/ohlc?interval=1m&limit=20`;
+        const url =
+            `${REAL_API}${asset.symbol}/ohlc?interval=1m&limit=50`;
 
         const response =
             await fetch(
-                historyUrl,
+                url,
                 {
                     cache:"no-store"
                 }
             );
 
-        if(requestId !== currentRequestId){
-            return;
-        }
-
         if(!response.ok){
 
             throw new Error(
-                "OHLC HTTP " + response.status
+                "OHLC HTTP " +
+                response.status
             );
 
         }
@@ -1633,9 +1603,9 @@ async function loadInitialHistory(){
                 ? json.bars
                 : [];
 
+
         /*
-         Remove current open candle.
-        Keep only completed 1-minute candles.
+         Only completed candles.
         */
 
         bars =
@@ -1644,6 +1614,15 @@ async function loadInitialHistory(){
                 bar =>
                     bar &&
                     bar.isOpen !== true &&
+                    Number.isFinite(
+                        Number(bar.open)
+                    ) &&
+                    Number.isFinite(
+                        Number(bar.high)
+                    ) &&
+                    Number.isFinite(
+                        Number(bar.low)
+                    ) &&
                     Number.isFinite(
                         Number(bar.close)
                     )
@@ -1654,47 +1633,49 @@ async function loadInitialHistory(){
                     new Date(b.openTime)
             );
 
+
+        candleHistory =
+            bars.slice(-40);
+
+
         priceHistory =
-            bars
-            .map(
-                bar =>
-                    Number(bar.close)
-            )
-            .filter(
-                price =>
-                    Number.isFinite(price)
-            )
-            .slice(-12);
+            candleHistory.map(
+                candle =>
+                    Number(candle.close)
+            );
 
 
-        /*
-         Fetch current live price
-        */
+        if(candleHistory.length){
+
+            lastLoadedCandleTime =
+                candleHistory[
+                    candleHistory.length - 1
+                ].openTime;
+
+        }
+
 
         await fetchPrice();
 
-
-        /*
-         Analyze immediately if enough
-         1-minute candles are available.
-        */
-
-        if(priceHistory.length >= 12){
-
-            analyzeMarket(true);
-
-        }else{
-
-            setWait(
-                "Waiting for more 1-minute data"
-            );
-
-        }
 
         priceStatus.textContent =
             currentPrice
                 ? "LIVE"
                 : "UNAVAILABLE";
+
+
+        /*
+         IMPORTANT:
+         No automatic signal generation here.
+        */
+
+        setWait(
+            "Data ready. Press Generate Signal."
+        );
+
+
+        updateTechnicalDisplay();
+
 
     }catch(error){
 
@@ -1703,29 +1684,15 @@ async function loadInitialHistory(){
             error
         );
 
-        /*
-         Even if OHLC history fails,
-         live tick can still work.
-        */
+        explanationEl.textContent =
+            "Unable to load 1-minute candle data.";
 
-        await fetchPrice();
-
-        if(
-            priceHistory.length < 12
-        ){
-
-            setWait(
-                "Collecting live market data"
-            );
-
-        }
+        priceStatus.textContent =
+            "ERROR";
 
     }finally{
 
         dataLoading = false;
-
-        signalStatus.textContent =
-            "READY";
 
     }
 
@@ -1733,7 +1700,7 @@ async function loadInitialHistory(){
 
 
 /* =========================================================
-   FETCH LIVE PRICE
+   LIVE PRICE
 ========================================================= */
 
 async function fetchPrice(){
@@ -1742,17 +1709,6 @@ async function fetchPrice(){
         getSelectedAsset();
 
     try{
-
-        /*
-         IMPORTANT:
-         Correct Biquote endpoint is:
-
-         https://biquote.io/api/EURUSD
-
-         NOT:
-
-         https://biquote.io/api/
-        */
 
         const response =
             await fetch(
@@ -1765,7 +1721,8 @@ async function fetchPrice(){
         if(!response.ok){
 
             throw new Error(
-                "Price HTTP " + response.status
+                "Price HTTP " +
+                response.status
             );
 
         }
@@ -1776,16 +1733,13 @@ async function fetchPrice(){
         const price =
             Number(json.mid);
 
-        if(
-            !Number.isFinite(price)
-        ){
+        if(!Number.isFinite(price)){
 
             throw new Error(
-                "Invalid mid price"
+                "Invalid price"
             );
 
         }
-
 
         previousPrice =
             currentPrice;
@@ -1793,39 +1747,8 @@ async function fetchPrice(){
         currentPrice =
             price;
 
-
         currentPriceEl.textContent =
             formatPrice(price);
-
-
-        /*
-         Add live tick to history.
-         Avoid unnecessary duplicate prices.
-        */
-
-        if(
-            priceHistory.length === 0 ||
-            priceHistory[
-                priceHistory.length - 1
-            ] !== price
-        ){
-
-            priceHistory.push(price);
-
-        }
-
-
-        /*
-         Keep reasonable amount of data.
-        */
-
-        if(priceHistory.length > 30){
-
-            priceHistory =
-                priceHistory.slice(-30);
-
-        }
-
 
         priceStatus.textContent =
             json.marketState === "closed"
@@ -1834,69 +1757,8 @@ async function fetchPrice(){
 
 
         /*
-         Analyze only once per minute.
+         DO NOT generate signals here.
         */
-
-        const now =
-            new Date();
-
-        const minuteKey =
-            now.getUTCFullYear() +
-            "-" +
-            String(
-                now.getUTCMonth()+1
-            ).padStart(2,"0") +
-            "-" +
-            String(
-                now.getUTCDate()
-            ).padStart(2,"0") +
-            "-" +
-            String(
-                now.getUTCHours()
-            ).padStart(2,"0") +
-            "-" +
-            String(
-                now.getUTCMinutes()
-            ).padStart(2,"0");
-
-
-        if(
-            minuteKey !== lastAnalysisMinute &&
-            priceHistory.length >= 12 &&
-            signal !== "CALL" &&
-            signal !== "PUT"
-        ){
-
-            analyzeMarket();
-
-        }
-
-
-        /*
-         If no active signal and enough
-         data is available, analyze.
-        */
-
-        if(
-            signal === "WAIT" &&
-            priceHistory.length >= 12
-        ){
-
-            const latestMinute =
-                Math.floor(
-                    Date.now()/60000
-                );
-
-            if(
-                lastAnalysisMinute !==
-                latestMinute
-            ){
-
-                analyzeMarket();
-
-            }
-
-        }
 
     }catch(error){
 
@@ -1908,32 +1770,20 @@ async function fetchPrice(){
         priceStatus.textContent =
             "UNAVAILABLE";
 
-        currentPriceEl.textContent =
-            "—";
-
     }
 
 }
 
 
 /* =========================================================
-   START PRICE POLLING
+   PRICE POLLING
 ========================================================= */
 
 function startPricePolling(){
 
     if(priceTimer){
-
-        clearInterval(
-            priceTimer
-        );
-
+        clearInterval(priceTimer);
     }
-
-    /*
-     Biquote anonymous API supports this
-     polling rate comfortably.
-    */
 
     fetchPrice();
 
@@ -1947,155 +1797,690 @@ function startPricePolling(){
 
 
 /* =========================================================
-   ANALYZE MARKET
+   CANDLE WATCHER
 ========================================================= */
 
-function analyzeMarket(manual = false){
+function startCandleWatcher(){
 
-    if(
-        priceHistory.length < 12
-    ){
+    if(candleTimer){
+        clearInterval(candleTimer);
+    }
 
-        setWait(
-            "Collecting 1-minute data"
+    candleTimer =
+        setInterval(
+            refreshCandleData,
+            10000
         );
 
-        return;
-
-    }
+}
 
 
-    const prices =
-        priceHistory.slice(-12);
+/* =========================================================
+   REFRESH CANDLE DATA
+========================================================= */
 
-
-    if(prices.length < 12){
-
-        setWait(
-            "Collecting 1-minute data"
-        );
-
-        return;
-
-    }
-
+async function refreshCandleData(){
 
     /*
-     Avoid duplicate analysis.
+     Keep fetching fresh completed candles,
+     but NEVER generate a signal automatically.
     */
 
-    const now =
-        new Date();
+    const asset =
+        getSelectedAsset();
 
-    const minuteKey =
-        now.getUTCFullYear() +
-        "-" +
-        String(
-            now.getUTCMonth()+1
-        ).padStart(2,"0") +
-        "-" +
-        String(
-            now.getUTCDate()
-        ).padStart(2,"0") +
-        "-" +
-        String(
-            now.getUTCHours()
-        ).padStart(2,"0") +
-        "-" +
-        String(
-            now.getUTCMinutes()
-        ).padStart(2,"0");
+    try{
 
+        const response =
+            await fetch(
+                `${REAL_API}${asset.symbol}/ohlc?interval=1m&limit=40`,
+                {
+                    cache:"no-store"
+                }
+            );
 
-    if(
-        !manual &&
-        minuteKey === lastAnalysisMinute
-    ){
+        if(!response.ok){
+            return;
+        }
 
-        return;
+        const json =
+            await response.json();
 
-    }
+        let bars =
+            Array.isArray(json.bars)
+                ? json.bars
+                : [];
 
 
-    lastAnalysisMinute =
-        minuteKey;
+        bars =
+            bars
+            .filter(
+                bar =>
+                    bar &&
+                    bar.isOpen !== true &&
+                    Number.isFinite(
+                        Number(bar.open)
+                    ) &&
+                    Number.isFinite(
+                        Number(bar.high)
+                    ) &&
+                    Number.isFinite(
+                        Number(bar.low)
+                    ) &&
+                    Number.isFinite(
+                        Number(bar.close)
+                    )
+            )
+            .sort(
+                (a,b) =>
+                    new Date(a.openTime) -
+                    new Date(b.openTime)
+            );
 
 
-    /*
-     Direction score
-    */
-
-    let score = 0;
-
-    let upMoves = 0;
-
-    let downMoves = 0;
+        candleHistory =
+            bars.slice(-40);
 
 
-    for(
-        let i = 1;
-        i < prices.length;
-        i++
-    ){
-
-        const diff =
-            prices[i] -
-            prices[i-1];
+        priceHistory =
+            candleHistory.map(
+                candle =>
+                    Number(candle.close)
+            );
 
 
-        if(diff > 0){
+        updateTechnicalDisplay();
 
-            score++;
-            upMoves++;
+        /*
+         If user clicked Generate and
+         the new candle has started,
+         activate the prepared signal.
+        */
 
-        }else if(diff < 0){
+        if(
+            pendingSignal &&
+            Date.now() >=
+            pendingSignal.startTime
+        ){
 
-            score--;
-            downMoves++;
+            activatePendingSignal();
 
         }
 
+    }catch(error){
+
+        console.error(
+            "Candle refresh:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   GENERATE BUTTON
+========================================================= */
+
+async function manualAnalyze(){
+
+    /*
+     Don't allow another signal while one
+     is already running.
+    */
+
+    if(
+        signal === "CALL" ||
+        signal === "PUT" ||
+        pendingSignal
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        candleHistory.length < 12
+    ){
+
+        await loadInitialHistory();
+
+    }
+
+
+    if(
+        candleHistory.length < 12
+    ){
+
+        explanationEl.textContent =
+            "Not enough 1-minute candles for deep analysis.";
+
+        return;
+
     }
 
 
     /*
-     Recent momentum
+     Run deep analysis NOW using completed candles.
     */
 
-    const first =
-        prices[0];
+    const analysis =
+        deepAnalyzeMarket();
 
-    const last =
-        prices[prices.length - 1];
 
-    const recentBase =
-        prices[
-            Math.max(
-                0,
-                prices.length - 5
-            )
-        ];
+    updateTechnicalDisplay(
+        analysis
+    );
 
-    const trendMove =
-        last - first;
 
-    const recentMove =
-        last - recentBase;
-
+    /*
+     If market is not strong enough,
+     don't force CALL/PUT.
+    */
 
     if(
-        trendMove > 0 &&
-        recentMove > 0
+        analysis.direction === "WAIT"
     ){
+
+        setWait(
+            "No high-quality setup. Wait for stronger confirmation."
+        );
+
+        confidenceText.textContent =
+            analysis.confidence + "%";
+
+        setConfidence(
+            analysis.confidence
+        );
+
+        return;
+
+    }
+
+
+    /*
+     Prepare signal for NEXT candle start.
+
+     Current candle start:
+     floor(Date.now()/60000)*60000
+
+     Next candle start:
+     +60000
+    */
+
+    const now =
+        Date.now();
+
+    const nextCandleStart =
+        Math.floor(
+            now / 60000
+        ) * 60000 + 60000;
+
+
+    pendingSignal = {
+
+        direction:
+            analysis.direction,
+
+        confidence:
+            analysis.confidence,
+
+        trend:
+            analysis.trend,
+
+        pattern:
+            analysis.pattern,
+
+        score:
+            analysis.score,
+
+        startTime:
+            nextCandleStart
+
+    };
+
+
+    signalStatus.textContent =
+        "WAITING";
+
+    signalLabel.className =
+        "signal-label wait";
+
+    signalLabel.textContent =
+        "READY";
+
+    signalDescription.textContent =
+        "Waiting for candle start";
+
+    signal3D.className =
+        "signal-3d wait";
+
+    signalArrow.textContent =
+        "✓";
+
+
+    entryTimeEl.textContent =
+        formatTime(
+            new Date(nextCandleStart)
+        );
+
+    timeLeftEl.textContent =
+        "00:00";
+
+
+    explanationEl.textContent =
+        `${analysis.direction} setup confirmed. ` +
+        `Signal will activate exactly at the next 1-minute candle start.`;
+
+
+    generateBtn.textContent =
+        "WAITING FOR CANDLE";
+
+    generateBtn.className =
+        "analyze-btn waiting";
+
+}
+
+
+/* =========================================================
+   ACTIVATE PENDING SIGNAL
+========================================================= */
+
+function activatePendingSignal(){
+
+    if(!pendingSignal){
+        return;
+    }
+
+
+    /*
+     Safety
+    */
+
+    if(
+        Date.now() <
+        pendingSignal.startTime
+    ){
+
+        return;
+
+    }
+
+
+    const prepared =
+        pendingSignal;
+
+
+    pendingSignal =
+        null;
+
+
+    signal =
+        prepared.direction;
+
+
+    /*
+     Exactly 60 seconds from
+     the candle start.
+    */
+
+    signalExpiry =
+        prepared.startTime + 60000;
+
+
+    lastSignalPrice =
+        currentPrice;
+
+    lastSignalDirection =
+        signal;
+
+    lastSignalTime =
+        prepared.startTime;
+
+    signalArmed =
+        true;
+
+
+    setSignalUI(
+        signal,
+        prepared.confidence
+    );
+
+
+    entryTimeEl.textContent =
+        formatTime(
+            new Date(
+                prepared.startTime
+            )
+        );
+
+
+    timeLeftEl.textContent =
+        "01:00";
+
+
+    if(signal === "CALL"){
+
+        explanationEl.textContent =
+            `Deep analysis confirms bullish pressure. ` +
+            `Trend: ${prepared.trend}. ` +
+            `Pattern: ${prepared.pattern}. ` +
+            `Multiple momentum factors are aligned for CALL.`;
+
+    }else{
+
+        explanationEl.textContent =
+            `Deep analysis confirms bearish pressure. ` +
+            `Trend: ${prepared.trend}. ` +
+            `Pattern: ${prepared.pattern}. ` +
+            `Multiple momentum factors are aligned for PUT.`;
+
+    }
+
+
+    addRecentSignal(
+        signal
+    );
+
+
+    updateGenerateButton();
+
+}
+
+
+/* =========================================================
+   DEEP ANALYSIS ENGINE
+========================================================= */
+
+function deepAnalyzeMarket(){
+
+    const candles =
+        candleHistory.slice(-20);
+
+
+    if(candles.length < 12){
+
+        return {
+
+            direction:"WAIT",
+            confidence:0,
+            score:0,
+            trend:"UNKNOWN",
+            pattern:"Insufficient Data"
+
+        };
+
+    }
+
+
+    /*
+     Last 12 completed candles
+    */
+
+    const data =
+        candles.slice(-12);
+
+
+    let score = 0;
+
+
+    /* -----------------------------------------------------
+       1. CANDLE DIRECTION
+    ----------------------------------------------------- */
+
+    let bullishCandles = 0;
+    let bearishCandles = 0;
+
+
+    data.forEach(candle => {
+
+        const open =
+            Number(candle.open);
+
+        const close =
+            Number(candle.close);
+
+
+        if(close > open){
+
+            bullishCandles++;
+
+        }else if(close < open){
+
+            bearishCandles++;
+
+        }
+
+    });
+
+
+    if(bullishCandles >= 8){
+
+        score += 3;
+
+    }else if(bullishCandles >= 7){
+
+        score += 2;
+
+    }else if(bullishCandles >= 6){
 
         score += 1;
 
     }
 
+
+    if(bearishCandles >= 8){
+
+        score -= 3;
+
+    }else if(bearishCandles >= 7){
+
+        score -= 2;
+
+    }else if(bearishCandles >= 6){
+
+        score -= 1;
+
+    }
+
+
+    /* -----------------------------------------------------
+       2. BODY STRENGTH
+    ----------------------------------------------------- */
+
+    let bullishBody = 0;
+    let bearishBody = 0;
+
+
+    data.forEach(candle => {
+
+        const open =
+            Number(candle.open);
+
+        const high =
+            Number(candle.high);
+
+        const low =
+            Number(candle.low);
+
+        const close =
+            Number(candle.close);
+
+
+        const range =
+            Math.max(
+                high-low,
+                Number.EPSILON
+            );
+
+
+        const body =
+            Math.abs(
+                close-open
+            );
+
+
+        const strength =
+            body / range;
+
+
+        if(
+            close > open &&
+            strength >= .55
+        ){
+
+            bullishBody += strength;
+
+        }
+
+
+        if(
+            close < open &&
+            strength >= .55
+        ){
+
+            bearishBody += strength;
+
+        }
+
+    });
+
+
     if(
-        trendMove < 0 &&
-        recentMove < 0
+        bullishBody >
+        bearishBody * 1.35
     ){
+
+        score += 2;
+
+    }
+
+
+    if(
+        bearishBody >
+        bullishBody * 1.35
+    ){
+
+        score -= 2;
+
+    }
+
+
+    /* -----------------------------------------------------
+       3. TREND / PRICE STRUCTURE
+    ----------------------------------------------------- */
+
+    const closes =
+        data.map(
+            candle =>
+                Number(candle.close)
+        );
+
+
+    const firstClose =
+        closes[0];
+
+    const lastClose =
+        closes[closes.length-1];
+
+
+    const middle =
+        closes.slice(0,6);
+
+
+    const recent =
+        closes.slice(-6);
+
+
+    const middleAvg =
+        average(middle);
+
+    const recentAvg =
+        average(recent);
+
+
+    let trend =
+        "SIDEWAYS";
+
+
+    if(
+        recentAvg >
+        middleAvg
+    ){
+
+        trend =
+            "BULLISH";
+
+        score += 2;
+
+    }else if(
+        recentAvg <
+        middleAvg
+    ){
+
+        trend =
+            "BEARISH";
+
+        score -= 2;
+
+    }
+
+
+    /* -----------------------------------------------------
+       4. SHORT MOMENTUM
+    ----------------------------------------------------- */
+
+    const fiveBack =
+        closes[
+            Math.max(
+                0,
+                closes.length-5
+            )
+        ];
+
+
+    const momentum =
+        lastClose -
+        fiveBack;
+
+
+    if(momentum > 0){
+
+        score += 2;
+
+    }else if(momentum < 0){
+
+        score -= 2;
+
+    }
+
+
+    /* -----------------------------------------------------
+       5. RSI-STYLE MOMENTUM
+    ----------------------------------------------------- */
+
+    const rsi =
+        calculateRSI(
+            closes,
+            8
+        );
+
+
+    if(rsi >= 58){
+
+        score += 2;
+
+    }else if(rsi >= 53){
+
+        score += 1;
+
+    }else if(rsi <= 42){
+
+        score -= 2;
+
+    }else if(rsi <= 47){
 
         score -= 1;
 
@@ -2103,11 +2488,218 @@ function analyzeMarket(manual = false){
 
 
     /*
-     Calculate confidence.
-
-     Maximum directional strength is
-     normalized around 12 points.
+     Avoid buying extreme overbought
+     or selling extreme oversold blindly.
     */
+
+    if(
+        rsi >= 75 &&
+        score > 0
+    ){
+
+        score -= 1;
+
+    }
+
+    if(
+        rsi <= 25 &&
+        score < 0
+    ){
+
+        score += 1;
+
+    }
+
+
+    /* -----------------------------------------------------
+       6. SUPPORT / RESISTANCE
+    ----------------------------------------------------- */
+
+    const lows =
+        data.map(
+            candle =>
+                Number(candle.low)
+        );
+
+    const highs =
+        data.map(
+            candle =>
+                Number(candle.high)
+        );
+
+
+    const support =
+        Math.min(
+            ...lows
+        );
+
+    const resistance =
+        Math.max(
+            ...highs
+        );
+
+
+    const range =
+        resistance -
+        support;
+
+
+    /*
+     Position inside recent range.
+    */
+
+    let position =
+        range > 0
+            ? (lastClose-support)/range
+            : .5;
+
+
+    /*
+     Don't chase a CALL directly into
+     extreme resistance.
+    */
+
+    if(
+        position < .78 &&
+        score > 0
+    ){
+
+        score += 1;
+
+    }
+
+
+    /*
+     Don't chase PUT directly into
+     extreme support.
+    */
+
+    if(
+        position > .22 &&
+        score < 0
+    ){
+
+        score -= 1;
+
+    }
+
+
+    /* -----------------------------------------------------
+       7. RECENT 3-CANDLE CONFIRMATION
+    ----------------------------------------------------- */
+
+    const last3 =
+        data.slice(-3);
+
+
+    let last3Bull = 0;
+    let last3Bear = 0;
+
+
+    last3.forEach(candle => {
+
+        const open =
+            Number(candle.open);
+
+        const close =
+            Number(candle.close);
+
+
+        if(close > open){
+            last3Bull++;
+        }
+
+        if(close < open){
+            last3Bear++;
+        }
+
+    });
+
+
+    if(last3Bull === 3){
+
+        score += 2;
+
+    }
+
+
+    if(last3Bear === 3){
+
+        score -= 2;
+
+    }
+
+
+    /* -----------------------------------------------------
+       8. VOLATILITY FILTER
+    ----------------------------------------------------- */
+
+    const ranges =
+        data.map(
+            candle =>
+                Number(candle.high) -
+                Number(candle.low)
+        );
+
+
+    const avgRange =
+        average(ranges);
+
+
+    const recentRange =
+        average(
+            ranges.slice(-3)
+        );
+
+
+    /*
+     If volatility is extremely low,
+     avoid forcing a signal.
+    */
+
+    const lowVolatility =
+        recentRange <
+        avgRange * .55;
+
+
+    if(lowVolatility){
+
+        score =
+            Math.round(
+                score * .65
+            );
+
+    }
+
+
+    /* -----------------------------------------------------
+       FINAL DECISION
+    ----------------------------------------------------- */
+
+    let direction =
+        "WAIT";
+
+
+    /*
+     Strong confirmation required.
+    */
+
+    if(score >= 7){
+
+        direction =
+            "CALL";
+
+    }else if(score <= -7){
+
+        direction =
+            "PUT";
+
+    }
+
+
+    /* -----------------------------------------------------
+       CONFIDENCE
+    ----------------------------------------------------- */
 
     let confidence =
         50 +
@@ -2118,249 +2710,285 @@ function analyzeMarket(manual = false){
 
 
     /*
-     Pattern
+     Confidence should reflect agreement.
+    */
+
+    const directionalAgreement =
+        Math.max(
+            bullishCandles,
+            bearishCandles
+        ) / 12;
+
+
+    confidence +=
+        Math.round(
+            directionalAgreement * 8
+        );
+
+
+    if(lowVolatility){
+
+        confidence -= 8;
+
+    }
+
+
+    confidence =
+        Math.max(
+            50,
+            Math.min(
+                95,
+                Math.round(confidence)
+            )
+        );
+
+
+    /*
+     Pattern label
     */
 
     let pattern =
-        "Mixed";
+        "Mixed Structure";
+
 
     if(
-        upMoves >= 8
+        bullishCandles >= 8 &&
+        last3Bull >= 2
+    ){
+
+        pattern =
+            "Bullish Continuation";
+
+    }else if(
+        bearishCandles >= 8 &&
+        last3Bear >= 2
+    ){
+
+        pattern =
+            "Bearish Continuation";
+
+    }else if(
+        trend === "BULLISH" &&
+        momentum > 0
     ){
 
         pattern =
             "Bullish Momentum";
 
     }else if(
-        downMoves >= 8
+        trend === "BEARISH" &&
+        momentum < 0
     ){
 
         pattern =
             "Bearish Momentum";
 
     }else if(
-        upMoves > downMoves
+        rsi > 55
     ){
 
         pattern =
-            "Bullish Bias";
+            "Positive Momentum";
 
     }else if(
-        downMoves > upMoves
+        rsi < 45
     ){
 
         pattern =
-            "Bearish Bias";
+            "Negative Momentum";
 
     }
 
 
     /*
-     Trend
+     If extreme resistance/support conflicts
+     with direction, reduce confidence.
     */
-
-    let trend =
-        "SIDEWAYS";
 
     if(
-        trendMove > 0
+        direction === "CALL" &&
+        position > .90
     ){
 
-        trend =
-            "BULLISH";
-
-    }else if(
-        trendMove < 0
-    ){
-
-        trend =
-            "BEARISH";
+        confidence -= 8;
 
     }
 
 
-    /*
-     Support / resistance
-    */
+    if(
+        direction === "PUT" &&
+        position < .10
+    ){
 
-    const recentPrices =
-        prices.slice(-10);
+        confidence -= 8;
 
-    const support =
-        Math.min(
-            ...recentPrices
-        );
+    }
 
-    const resistance =
+
+    confidence =
         Math.max(
-            ...recentPrices
-        );
-
-
-    /*
-     Signal thresholds
-
-     Strong positive:
-     CALL
-
-     Strong negative:
-     PUT
-
-     Otherwise:
-     WAIT
-    */
-
-    let direction =
-        "WAIT";
-
-
-    if(score >= 3){
-
-        direction =
-            "CALL";
-
-    }else if(score <= -3){
-
-        direction =
-            "PUT";
-
-    }
-
-
-    updateAnalysis(
-        trend,
-        pattern,
-        support,
-        resistance
-    );
-
-
-    if(direction === "WAIT"){
-
-        setWait(
-            "Market momentum is not strong enough"
-        );
-
-        confidence =
+            50,
             Math.min(
-                confidence,
-                62
-            );
-
-        setConfidence(
-            confidence
+                95,
+                Math.round(confidence)
+            )
         );
 
-        return;
 
-    }
+    return {
 
+        direction:
+            direction,
 
-    /*
-     New signal
-    */
+        confidence:
+            confidence,
 
-    createSignal(
-        direction,
-        confidence,
-        trend,
-        pattern,
-        score
-    );
+        score:
+            score,
+
+        trend:
+            trend,
+
+        pattern:
+            pattern,
+
+        support:
+            support,
+
+        resistance:
+            resistance,
+
+        rsi:
+            rsi
+
+    };
 
 }
 
 
 /* =========================================================
-   CREATE SIGNAL
+   RSI
 ========================================================= */
 
-function createSignal(
-    direction,
-    confidence,
-    trend,
-    pattern,
-    score
+function calculateRSI(
+    values,
+    period = 8
 ){
 
-    /*
-     If same active signal exists,
-     don't replace it every 5 seconds.
-    */
-
     if(
-        signal === direction &&
-        signalExpiry > Date.now()
+        values.length <= period
     ){
 
-        return;
+        return 50;
 
     }
 
 
-    signal =
-        direction;
-
-    signalExpiry =
-        Date.now() + 60000;
+    let gains = 0;
+    let losses = 0;
 
 
-    lastSignalPrice =
-        currentPrice;
+    for(
+        let i =
+            values.length-period;
+        i < values.length;
+        i++
+    ){
 
-    lastSignalDirection =
-        direction;
-
-    lastSignalTime =
-        Date.now();
-
-
-    signalArmed =
-        true;
+        const change =
+            values[i] -
+            values[i-1];
 
 
-    setSignalUI(
-        direction,
-        confidence
-    );
+        if(change > 0){
 
+            gains += change;
 
-    entryTimeEl.textContent =
-        formatTime(
-            new Date()
-        );
+        }else{
 
+            losses += Math.abs(change);
 
-    timeLeftEl.textContent =
-        "01:00";
-
-
-    if(direction === "CALL"){
-
-        explanationEl.textContent =
-            `Bullish momentum detected. ` +
-            `${trend} trend with ${pattern}. ` +
-            `The latest price movement supports a CALL setup.`;
-
-    }else{
-
-        explanationEl.textContent =
-            `Bearish momentum detected. ` +
-            `${trend} trend with ${pattern}. ` +
-            `The latest price movement supports a PUT setup.`;
+        }
 
     }
 
 
-    addRecentSignal(
-        direction
-    );
+    if(losses === 0){
+
+        return 100;
+
+    }
+
+
+    const avgGain =
+        gains / period;
+
+    const avgLoss =
+        losses / period;
+
+
+    const rs =
+        avgGain / avgLoss;
+
+
+    return 100 -
+        (100/(1+rs));
 
 }
 
 
 /* =========================================================
-   SET SIGNAL UI
+   UPDATE TECHNICAL DISPLAY
+========================================================= */
+
+function updateTechnicalDisplay(
+    analysis = null
+){
+
+    if(!analysis){
+
+        if(candleHistory.length < 12){
+            return;
+        }
+
+        analysis =
+            deepAnalyzeMarket();
+
+    }
+
+
+    trendValue.textContent =
+        analysis.trend || "—";
+
+
+    patternValue.textContent =
+        analysis.pattern || "—";
+
+
+    supportValue.textContent =
+        Number.isFinite(
+            analysis.support
+        )
+            ? formatPrice(
+                analysis.support
+            )
+            : "—";
+
+
+    resistanceValue.textContent =
+        Number.isFinite(
+            analysis.resistance
+        )
+            ? formatPrice(
+                analysis.resistance
+            )
+            : "—";
+
+}
+
+
+/* =========================================================
+   SIGNAL UI
 ========================================================= */
 
 function setSignalUI(
@@ -2378,24 +3006,31 @@ function setSignalUI(
 
     if(direction === "CALL"){
 
+        signal3D.className =
+            "signal-3d call";
+
+        signalArrow.textContent =
+            "↑";
+
         signalDescription.textContent =
             "1-Min Bullish Signal";
 
-    }else if(direction === "PUT"){
+    }else{
+
+        signal3D.className =
+            "signal-3d put";
+
+        signalArrow.textContent =
+            "↓";
 
         signalDescription.textContent =
             "1-Min Bearish Signal";
-
-    }else{
-
-        signalDescription.textContent =
-            "Market Unclear";
 
     }
 
 
     signalStatus.textContent =
-        "ACTIVE";
+        "SIGNAL RUNNING";
 
 
     setConfidence(
@@ -2406,13 +3041,33 @@ function setSignalUI(
 
 
 /* =========================================================
-   WAIT
+   WAIT UI
 ========================================================= */
 
-function setWait(message){
+function setWait(
+    message
+){
+
+    if(
+        signal === "CALL" ||
+        signal === "PUT"
+    ){
+
+        return;
+
+    }
+
 
     signal =
         "WAIT";
+
+
+    signal3D.className =
+        "signal-3d wait";
+
+    signalArrow.textContent =
+        "—";
+
 
     signalLabel.className =
         "signal-label wait";
@@ -2420,24 +3075,33 @@ function setWait(message){
     signalLabel.textContent =
         "WAIT";
 
+
     signalDescription.textContent =
-        "Market Unclear";
+        "Press Generate Signal";
+
 
     signalStatus.textContent =
-        "ANALYZING";
+        "READY";
+
 
     explanationEl.textContent =
         message;
 
+
     entryTimeEl.textContent =
         "—";
+
 
     timeLeftEl.textContent =
         "—";
 
+
     setConfidence(
         0
     );
+
+
+    updateGenerateButton();
 
 }
 
@@ -2446,7 +3110,9 @@ function setWait(message){
    CONFIDENCE
 ========================================================= */
 
-function setConfidence(value){
+function setConfidence(
+    value
+){
 
     value =
         Math.max(
@@ -2462,44 +3128,11 @@ function setConfidence(value){
         value + "%";
 
 
-    const degrees =
-        value * 3.6;
-
-
     confidenceRing.style
         .setProperty(
             "--confidence",
-            degrees + "deg"
-        );
-
-}
-
-
-/* =========================================================
-   UPDATE ANALYSIS
-========================================================= */
-
-function updateAnalysis(
-    trend,
-    pattern,
-    support,
-    resistance
-){
-
-    trendValue.textContent =
-        trend;
-
-    patternValue.textContent =
-        pattern;
-
-    supportValue.textContent =
-        formatPrice(
-            support
-        );
-
-    resistanceValue.textContent =
-        formatPrice(
-            resistance
+            (value * 3.6) +
+            "deg"
         );
 
 }
@@ -2512,17 +3145,15 @@ function updateAnalysis(
 function startCountdown(){
 
     if(countdownTimer){
-
         clearInterval(
             countdownTimer
         );
-
     }
 
     countdownTimer =
         setInterval(
             updateCountdown,
-            500
+            250
         );
 
 }
@@ -2545,9 +3176,7 @@ function updateCountdown(){
         Date.now();
 
 
-    if(
-        remaining <= 0
-    ){
+    if(remaining <= 0){
 
         timeLeftEl.textContent =
             "00:00";
@@ -2570,6 +3199,7 @@ function updateCountdown(){
             seconds / 60
         );
 
+
     const secs =
         seconds % 60;
 
@@ -2583,16 +3213,12 @@ function updateCountdown(){
 
 
 /* =========================================================
-   CHECK RESULT
+   RESULT
 ========================================================= */
 
 function checkResult(){
 
     if(!signalArmed){
-
-        setWait(
-            "Waiting for next setup"
-        );
 
         return;
 
@@ -2607,8 +3233,11 @@ function checkResult(){
         signalArmed =
             false;
 
+        signal =
+            "WAIT";
+
         setWait(
-            "Result unavailable"
+            "Result unavailable."
         );
 
         return;
@@ -2621,14 +3250,18 @@ function checkResult(){
         lastSignalPrice;
 
 
-    let result =
-        "DRAW";
-
+    /*
+     Small price movement = DRAW
+    */
 
     const threshold =
         Math.abs(
             lastSignalPrice * 0.00001
         );
+
+
+    let result =
+        "DRAW";
 
 
     if(
@@ -2642,7 +3275,8 @@ function checkResult(){
         totalDraws++;
 
     }else if(
-        lastSignalDirection === "CALL"
+        lastSignalDirection ===
+        "CALL"
     ){
 
         if(difference > 0){
@@ -2662,7 +3296,8 @@ function checkResult(){
         }
 
     }else if(
-        lastSignalDirection === "PUT"
+        lastSignalDirection ===
+        "PUT"
     ){
 
         if(difference < 0){
@@ -2711,12 +3346,101 @@ function checkResult(){
         null;
 
 
+    signal3D.className =
+        "signal-3d wait";
+
+    signalArrow.textContent =
+        "✓";
+
+
+    signalLabel.className =
+        "signal-label wait";
+
+    signalLabel.textContent =
+        "WAIT";
+
+
+    signalDescription.textContent =
+        "Signal completed";
+
+
+    signalStatus.textContent =
+        "READY";
+
+
+    entryTimeEl.textContent =
+        "—";
+
+    timeLeftEl.textContent =
+        "—";
+
+
+    explanationEl.textContent =
+        `Previous signal result: ${result}. ` +
+        `Press Generate Signal for the next setup.`;
+
+
+    setConfidence(
+        0
+    );
+
+
     updateStats();
 
+    updateGenerateButton();
 
-    setWait(
-        "Signal expired. Waiting for next setup."
-    );
+}
+
+
+/* =========================================================
+   BUTTON STATE
+========================================================= */
+
+function updateGenerateButton(){
+
+    if(
+        signal === "CALL" ||
+        signal === "PUT"
+    ){
+
+        generateBtn.textContent =
+            "SIGNAL RUNNING";
+
+        generateBtn.className =
+            "analyze-btn running";
+
+        generateBtn.disabled =
+            true;
+
+        return;
+
+    }
+
+
+    if(pendingSignal){
+
+        generateBtn.textContent =
+            "WAITING FOR CANDLE";
+
+        generateBtn.className =
+            "analyze-btn waiting";
+
+        generateBtn.disabled =
+            true;
+
+        return;
+
+    }
+
+
+    generateBtn.textContent =
+        "GENERATE SIGNAL";
+
+    generateBtn.className =
+        "analyze-btn";
+
+    generateBtn.disabled =
+        false;
 
 }
 
@@ -2750,16 +3474,15 @@ function addRecentSignal(
     });
 
 
-    /*
-     Maximum 10
-    */
-
     if(
         recentSignals.length > 10
     ){
 
         recentSignals =
-            recentSignals.slice(0,10);
+            recentSignals.slice(
+                0,
+                10
+            );
 
     }
 
@@ -2770,7 +3493,7 @@ function addRecentSignal(
 
 
 /* =========================================================
-   UPDATE LAST RESULT
+   HISTORY RESULT
 ========================================================= */
 
 function updateLastHistoryResult(
@@ -2825,6 +3548,7 @@ function renderHistory(){
                 let resultClass =
                     "";
 
+
                 if(
                     item.result === "WIN"
                 ){
@@ -2845,6 +3569,11 @@ function renderHistory(){
 
                     resultClass =
                         "draw";
+
+                }else{
+
+                    resultClass =
+                        "pending";
 
                 }
 
@@ -2910,36 +3639,33 @@ function updateStats(){
 
 
 /* =========================================================
-   MANUAL ANALYZE
+   HELPERS
 ========================================================= */
 
-function manualAnalyze(){
+function average(
+    array
+){
 
     if(
-        priceHistory.length < 12
+        !array.length
     ){
 
-        explanationEl.textContent =
-            "Still collecting enough 1-minute market data.";
-
-        return;
+        return 0;
 
     }
 
 
-    /*
-     Allow manual analysis
-     even inside the same minute.
-    */
-
-    analyzeMarket(true);
+    return array.reduce(
+        (
+            total,
+            value
+        ) =>
+            total + value,
+        0
+    ) / array.length;
 
 }
 
-
-/* =========================================================
-   FORMAT PRICE
-========================================================= */
 
 function formatPrice(
     price
@@ -2954,11 +3680,6 @@ function formatPrice(
     }
 
 
-    /*
-     Most forex pairs use 5 decimals,
-     JPY pairs use 3 decimals.
-    */
-
     const asset =
         getSelectedAsset();
 
@@ -2969,16 +3690,11 @@ function formatPrice(
             : 5;
 
 
-    return price.toFixed(
-        decimals
-    );
+    return Number(price)
+        .toFixed(decimals);
 
 }
 
-
-/* =========================================================
-   FORMAT TIME
-========================================================= */
 
 function formatTime(
     date
@@ -2997,7 +3713,7 @@ function formatTime(
 
 
 /* =========================================================
-   START
+   CLEANUP
 ========================================================= */
 
 window.addEventListener(
@@ -3005,19 +3721,15 @@ window.addEventListener(
     function(){
 
         if(priceTimer){
-
-            clearInterval(
-                priceTimer
-            );
-
+            clearInterval(priceTimer);
         }
 
         if(countdownTimer){
+            clearInterval(countdownTimer);
+        }
 
-            clearInterval(
-                countdownTimer
-            );
-
+        if(candleTimer){
+            clearInterval(candleTimer);
         }
 
     }
