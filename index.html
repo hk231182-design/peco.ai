@@ -83,6 +83,7 @@ button,input,select{font:inherit}
 }
 
 .brand-peco{color:#fff}
+
 .brand-ai{
  color:var(--green);
  text-shadow:0 0 12px #45f0a38c,0 0 28px #45f0a340
@@ -1254,6 +1255,7 @@ const realAssets=[
 ];
 
 let selectedAsset=realAssets[0];
+
 let currentPrice=null;
 let previousPrice=null;
 
@@ -1276,7 +1278,10 @@ let recentSignals=[];
 
 let priceTimer=null;
 let candleTimer=null;
+
 let pendingSignal=null;
+let confirmationBusy=false;
+
 let dataLoading=false;
 let lastLoadedCandleTime=null;
 let lastSignalConfidence=0;
@@ -1334,10 +1339,17 @@ function changeAsset(){
  previousPrice=null;
  priceHistory=[];
  candleHistory=[];
+
  pendingSignal=null;
+ confirmationBusy=false;
 
  signal="WAIT";
  signalExpiry=0;
+
+ lastSignalPrice=null;
+ lastSignalDirection=null;
+ lastSignalTime=null;
+ signalArmed=false;
 
  lastSignalConfidence=0;
 
@@ -1368,6 +1380,10 @@ function changeAsset(){
 
  $("liveState").textContent="SIGNAL READY";
  $("pairBadge").textContent="READY";
+
+ $("trendValue").textContent="WAITING";
+ $("momentumValue").textContent="WAITING";
+ $("patternValue").textContent="WAITING";
 
  updateGenerateButton();
 
@@ -1565,7 +1581,7 @@ function updatePriceUI(){
  }
 
  $("currentPrice").textContent=
- currentPrice.toFixed(currentPrice<10?5:3);
+  currentPrice.toFixed(currentPrice<10?5:3);
 
  if(previousPrice===null){
 
@@ -1582,9 +1598,9 @@ function updatePriceUI(){
  const diff=currentPrice-previousPrice;
 
  const percent=
- previousPrice
- ?(diff/previousPrice)*100
- :0;
+  previousPrice
+  ?(diff/previousPrice)*100
+  :0;
 
  if(diff>0){
 
@@ -1634,6 +1650,8 @@ function startCandleWatcher(){
  if(candleTimer)
   clearInterval(candleTimer);
 
+ refreshCandles();
+
  candleTimer=
  setInterval(refreshCandles,5000);
 
@@ -1670,13 +1688,6 @@ async function refreshCandles(){
    bars.length
    ?barTime(bars[bars.length-1])
    :null;
-
-  if(
-   pendingSignal &&
-   Date.now()>=pendingSignal.startTime
-  ){
-   activatePendingSignal();
-  }
 
   lastLoadedCandleTime=latestTime;
 
@@ -1808,6 +1819,7 @@ function deepAnalyzeMarket(){
  return{
   direction,
   confidence,
+
   trend:
    change>0
    ?"BULLISH"
@@ -1848,30 +1860,110 @@ function manualAnalyze(){
 
  const btn=$("generateBtn");
 
+ /*
+  IMPORTANT:
+  Do NOT generate signal now.
+  Only start confirmation mode.
+ */
+
+ const now=Date.now();
+
+ const nextCandleStart=
+  Math.floor(now/60000)*60000+60000;
+
+ pendingSignal={
+  requestedAt:now,
+  startTime:nextCandleStart
+ };
+
  btn.textContent=
-  "ANALYZING MARKET...";
+  "FINDING CONFIRMATION";
 
  btn.disabled=true;
 
- if(priceHistory.length<12){
+ btn.classList.add("waiting");
 
-  $("signalStatus").textContent=
-   "COLLECTING 1-MIN DATA";
+ $("signalStatus").textContent=
+  "FINDING CONFIRMATION";
 
-  $("signalDirection").textContent=
-   "WAIT";
+ $("liveState").textContent=
+  "FINDING CONFIRMATION";
 
-  $("priceChange").textContent=
-   `Need more market data (${priceHistory.length}/12 points)`;
+ $("pairBadge").textContent=
+  "WAIT";
 
-  btn.textContent=
-   "GENERATE SIGNAL";
+ $("signalDirection").textContent=
+  "WAIT";
 
-  btn.disabled=false;
+ $("signalIcon").textContent=
+  "—";
 
+ $("tradeCaption").textContent=
+  "⌄  WAIT FOR CANDLE";
+
+ $("signalResult").textContent=
+  "WAIT";
+
+ $("confidenceNumber").textContent=
+  "--%";
+
+ $("confidenceLevel").textContent=
+  "Waiting for confirmation";
+
+ $("confidenceNote").textContent=
+  "Signal will be confirmed at the start of a new 1-minute candle.";
+
+ $("confidenceProgress").style.strokeDashoffset=
+  289;
+
+ $("entryTime").textContent=
+  "--:--";
+
+ $("signalTimer").textContent=
+  "01:00";
+
+ $("trendValue").textContent=
+  "CONFIRMING";
+
+ $("momentumValue").textContent=
+  "CONFIRMING";
+
+ $("patternValue").textContent=
+  "CONFIRMING";
+
+}
+
+
+/* CANDLE START CONFIRMATION */
+
+async function confirmAtCandleStart(){
+
+ if(
+  !pendingSignal||
+  confirmationBusy||
+  signal==="CALL"||
+  signal==="PUT"
+ )
   return;
 
- }
+ confirmationBusy=true;
+
+ const candleStart=
+  pendingSignal.startTime;
+
+ /*
+  Get fresh market data exactly around
+  the beginning of the new 1-minute candle.
+ */
+
+ await fetchPrice();
+
+ await refreshCandles();
+
+ /*
+  Run analysis only now.
+  This is the actual signal confirmation.
+ */
 
  const result=
   deepAnalyzeMarket();
@@ -1885,54 +1977,85 @@ function manualAnalyze(){
  $("patternValue").textContent=
   result.pattern;
 
- /*
-  FIX:
-  Original threshold was 5.
-  Now valid setups start from ±3,
-  matching the scoring system.
- */
+ if(
+  result.direction==="CALL"||
+  result.direction==="PUT"
+ ){
 
- if(result.direction==="WAIT"){
+  activateConfirmedSignal(
+   result,
+   candleStart
+  );
+
+  pendingSignal=null;
+
+ }else{
+
+  /*
+   No confirmed CALL/PUT.
+   Continue searching and check
+   the next 1-minute candle.
+  */
+
+  const nextStart=
+   Math.floor(Date.now()/60000)*60000+60000;
+
+  pendingSignal.startTime=
+   nextStart;
 
   $("signalStatus").textContent=
-   "MARKET UNCLEAR";
+   "FINDING CONFIRMATION";
+
+  $("liveState").textContent=
+   "FINDING CONFIRMATION";
+
+  $("pairBadge").textContent=
+   "WAIT";
 
   $("signalDirection").textContent=
    "WAIT";
 
-  $("signalIcon").textContent="—";
+  $("signalIcon").textContent=
+   "—";
 
-  $("signalConfidence").textContent=
-   "AI CONFIDENCE: --";
+  $("tradeCaption").textContent=
+   "⌄  WAIT FOR CANDLE";
 
   $("confidenceNumber").textContent=
    "--%";
 
   $("confidenceLevel").textContent=
-   "Waiting for signal";
+   "Waiting for confirmation";
 
-  $("liveState").textContent=
-   "SIGNAL READY";
-
-  btn.textContent=
-   "GENERATE SIGNAL";
-
-  btn.disabled=false;
-
-  return;
+  $("confidenceNote").textContent=
+   "No confirmed setup yet. Waiting for the next 1-minute candle.";
 
  }
 
- /*
-  FIX:
-  Signal is activated immediately.
-  No waiting for the next candle.
- */
+ confirmationBusy=false;
+
+ updateGenerateButton();
+
+}
+
+
+/* ACTIVATE CONFIRMED SIGNAL */
+
+function activateConfirmedSignal(
+ result,
+ candleStart
+){
 
  signal=result.direction;
 
+ /*
+  IMPORTANT:
+  Expiry is exactly one minute from
+  the START of the candle.
+ */
+
  signalExpiry=
-  Date.now()+60000;
+  candleStart+60000;
 
  lastSignalPrice=
   currentPrice;
@@ -1941,7 +2064,7 @@ function manualAnalyze(){
   signal;
 
  lastSignalTime=
-  Date.now();
+  candleStart;
 
  signalArmed=true;
 
@@ -1969,7 +2092,7 @@ function manualAnalyze(){
   `AI CONFIDENCE: ${result.confidence}%`;
 
  $("entryTime").textContent=
-  new Date().toLocaleTimeString(
+  new Date(candleStart).toLocaleTimeString(
    [],
    {
     hour:"2-digit",
@@ -2030,7 +2153,10 @@ function updateGenerateButton(){
 
  const btn=$("generateBtn");
 
- if(signal==="CALL"||signal==="PUT"){
+ if(
+  signal==="CALL"||
+  signal==="PUT"
+ ){
 
   btn.textContent=
    "SIGNAL RUNNING";
@@ -2046,7 +2172,7 @@ function updateGenerateButton(){
  if(pendingSignal){
 
   btn.textContent=
-   "WAITING FOR CANDLE";
+   "FINDING CONFIRMATION";
 
   btn.disabled=true;
 
@@ -2072,6 +2198,21 @@ function updateTimer(){
 
  const timer=
   $("signalTimer");
+
+ /*
+  Check whether the requested signal
+  has reached the START of a new candle.
+ */
+
+ if(
+  pendingSignal &&
+  !confirmationBusy &&
+  Date.now()>=pendingSignal.startTime
+ ){
+
+  confirmAtCandleStart();
+
+ }
 
  if(
   signal==="CALL"||
@@ -2162,6 +2303,9 @@ function finishSignal(){
  $("confidenceProgress").style.strokeDashoffset=
   289;
 
+ $("entryTime").textContent=
+  "--:--";
+
  updateGenerateButton();
 
 }
@@ -2240,7 +2384,7 @@ function addRecentSignal(){
 
   direction:lastSignalDirection,
 
-  time:new Date().toLocaleTimeString(
+  time:new Date(lastSignalTime).toLocaleTimeString(
    [],
    {
     hour:"2-digit",
