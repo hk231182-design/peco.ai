@@ -285,14 +285,14 @@ function deepAnalyzeMarket(){
  const shortMove=prices.at(-1)-prices.at(-5);if(shortMove>0)score++;else if(shortMove<0)score--;
  let totalMove=0;for(let i=1;i<prices.length;i++)totalMove+=Math.abs(prices[i]-prices[i-1]);
  const avgMove=totalMove/(prices.length-1);if(avgMove>0&&Math.abs(change)>avgMove*1.5)score+=change>0?1:-1;
- let direction="WAIT";if(score>=7)direction="CALL";else if(score<=-7)direction="PUT";
+ let direction="WAIT";if(score>=5)direction="CALL";else if(score<=-5)direction="PUT";
  const confidence=direction==="WAIT"?50:Math.min(95,60+Math.abs(score)*4);
  return{direction,confidence,trend:change>0?"BULLISH":change<0?"BEARISH":"SIDEWAYS",momentum:recentAvg>oldAvg?"BULLISH":recentAvg<oldAvg?"BEARISH":"NEUTRAL",pattern:p1>p2&&p2>p3?"3 CANDLE BULLISH":p1<p2&&p2<p3?"3 CANDLE BEARISH":"MIXED",score};
 }
 function manualAnalyze(){
  if(signal==="CALL"||signal==="PUT"||pendingSignal)return;
  $("generateBtn").textContent="GENERATING SIGNALS...";$("generateBtn").disabled=true;
- if(priceHistory.length<12){$("signalStatus").textContent="COLLECTING 1-MIN DATA";$("signalDirection").textContent="WAIT";$("generateBtn").textContent="GENERATE SIGNAL";$("generateBtn").disabled=false;return}
+ if(priceHistory.length<12){$("signalStatus").textContent="COLLECTING 1-MIN DATA";$("signalDirection").textContent="WAIT";$("priceChange").textContent=`Need more market data (${priceHistory.length}/12 points)`;$("generateBtn").textContent="GENERATE SIGNAL";$("generateBtn").disabled=false;return}
  const result=deepAnalyzeMarket();
  $("trendValue").textContent=result.trend;$("momentumValue").textContent=result.momentum;$("patternValue").textContent=result.pattern;
  if(result.direction==="WAIT"){
@@ -331,6 +331,8 @@ function updateGenerateButton(){
  btn.textContent="GENERATE SIGNAL";btn.disabled=false;btn.classList.remove("waiting");
 }
 function updateTimer(){
+ // Safety fallback: activate a queued signal at the next minute even if OHLC refresh fails.
+ if(pendingSignal && Date.now()>=pendingSignal.startTime)activatePendingSignal();
  const timer=$("signalTimer");
  if(signal==="CALL"||signal==="PUT"){
   const remaining=Math.max(0,signalExpiry-Date.now()),seconds=Math.ceil(remaining/1000);
