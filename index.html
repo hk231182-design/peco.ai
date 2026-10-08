@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,1017 +7,198 @@
 <title>PECO AI</title>
 
 <style>
-*{
- box-sizing:border-box;
- margin:0;
- padding:0;
- font-family:Arial,Helvetica,sans-serif
-}
-
-:root{
- --green:#45f0a3;
- --green2:#20c879;
- --bg:#030a07;
- --panel:#071810;
- --muted:#8aa397;
- --red:#ff4055
-}
-
-body{
- min-height:100vh;
- color:#f5fff9;
- background:radial-gradient(ellipse at 50% 0,#103c29 0,#06170f 35%,#020704 78%);
- overflow-x:hidden
-}
-
-body:before{
- content:"";
- position:fixed;
- inset:0;
- pointer-events:none;
- background:
- radial-gradient(circle at 10% 20%,#24d77b12,transparent 28%),
- radial-gradient(circle at 95% 35%,#12ba7010,transparent 30%);
- z-index:-1
-}
-
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+:root{--green:#45f0a3;--green2:#20c879;--bg:#030a07;--panel:#071810;--muted:#8aa397;--red:#ff4055}
+body{min-height:100vh;color:#f5fff9;background:radial-gradient(ellipse at 50% 0,#103c29 0,#06170f 35%,#020704 78%);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 10% 20%,#24d77b12,transparent 28%),radial-gradient(circle at 95% 35%,#12ba7010,transparent 30%);z-index:-1}
 button,input,select{font:inherit}
-
-#accessScreen{
- min-height:100vh;
- display:flex;
- align-items:center;
- justify-content:center;
- padding:20px
-}
-
-.access-card{
- width:100%;
- max-width:420px;
- padding:38px 28px;
- text-align:center;
- border:1px solid #45f0a329;
- border-radius:28px;
- background:linear-gradient(145deg,#0d2419,#06110b);
- box-shadow:0 25px 80px #0009,0 0 40px #28f09b0c,inset 0 1px #ffffff0a
-}
-
-.access-logo{
- width:82px;
- height:82px;
- margin:0 auto 20px;
- border-radius:25px;
- display:grid;
- place-items:center;
- font-size:38px;
- font-weight:900;
- color:var(--green);
- background:linear-gradient(145deg,#194832,#06100b);
- border:1px solid #45f0a344;
- box-shadow:0 10px 25px #0008,0 0 30px #45f0a31c,inset 4px 4px 10px #ffffff12,inset -5px -5px 10px #0008;
- overflow:hidden
-}
-
-/* CHANGE 1: ACCESS SCREEN LOGO IMAGE */
-.access-logo img{
- width:100%;
- height:100%;
- object-fit:contain;
- border-radius:inherit;
- padding:5px;
- display:block
-}
-
-.access-card h1{
- font-size:30px;
- letter-spacing:4px;
- margin-bottom:7px
-}
-
+#accessScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.access-card{width:100%;max-width:420px;padding:38px 28px;text-align:center;border:1px solid #45f0a329;border-radius:28px;background:linear-gradient(145deg,#0d2419,#06110b);box-shadow:0 25px 80px #0009,0 0 40px #28f09b0c,inset 0 1px #ffffff0a}
+.access-logo{width:82px;height:82px;margin:0 auto 20px;border-radius:25px;display:grid;place-items:center;background:linear-gradient(145deg,#10291b,#06100b);border:1px solid #45f0a359;box-shadow:0 10px 25px #0008,0 0 30px #45f0a31c;overflow:hidden;padding:0}
+.peco-svg-logo{width:100%;height:100%;display:block;overflow:visible}
+.access-card h1{font-size:30px;letter-spacing:4px;margin-bottom:7px}
 .brand-peco{color:#fff}
-
-.brand-ai{
- color:var(--green);
- text-shadow:0 0 12px #45f0a38c,0 0 28px #45f0a340
-}
-
-.access-sub{
- color:#52e8a4;
- font-size:10px;
- letter-spacing:2px;
- margin-bottom:28px
-}
-
-.access-input{
- width:100%;
- height:52px;
- border-radius:15px;
- border:1px solid #ffffff14;
- outline:none;
- background:#050d09;
- color:#fff;
- padding:0 16px;
- text-align:center;
- letter-spacing:2px;
- font-size:14px;
- margin-bottom:14px
-}
-
-.access-input:focus{
- border-color:#45f0a380;
- box-shadow:0 0 20px #45f0a314
-}
-
-.access-btn,.generate-btn{
- border:0;
- background:linear-gradient(135deg,#2be99a,#43f0a5);
- color:#03110a;
- font-weight:900;
- cursor:pointer;
- box-shadow:0 8px 20px #2ae99a2e,0 0 25px #2ae99a14
-}
-
-.access-btn{
- width:100%;
- height:52px;
- border-radius:15px;
- letter-spacing:1px
-}
-
-.access-error{
- display:none;
- color:#ff5c5c;
- font-size:11px;
- margin-top:12px
-}
-
-/* MAIN */
-
-#mainApp{
- display:none;
- width:100%;
- max-width:680px;
- margin:0 auto;
- padding:14px 12px 32px
-}
-
-.header{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:9px;
- min-height:68px;
- padding:9px 12px;
- margin-bottom:16px;
- border:1px solid #4af0a347;
- border-radius:23px;
- background:linear-gradient(110deg,#071b12,#031009);
- box-shadow:0 0 28px #19dc7817,inset 0 1px #ffffff0a
-}
-
-.menu-btn,.header-avatar{
- width:42px;
- height:42px;
- flex-shrink:0;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- background:linear-gradient(145deg,#142d22,#07110d);
- border:1px solid #ffffff12;
- box-shadow:0 8px 20px #0005,inset 2px 2px 5px #ffffff0a
-}
-
-.menu-btn{
- color:var(--green);
- font-size:19px;
- cursor:pointer
-}
-
-/* CHANGE 2: HEADER LOGO IMAGE */
-.header-avatar{
- color:var(--green);
- font-size:15px;
- font-weight:900;
- border-color:#45f0a359;
- box-shadow:0 0 16px #45f0a326;
- overflow:hidden;
- padding:4px
-}
-
-.header-avatar img{
- width:100%;
- height:100%;
- object-fit:contain;
- border-radius:50%;
- display:block
-}
-
-.logo-title{
- text-align:center;
- flex:1;
- min-width:0
-}
-
-.logo-title h1{
- font-size:23px;
- letter-spacing:-.5px;
- font-weight:900
-}
-
-.logo-title>span{
- display:block;
- color:#48e9a2;
- font-size:7px;
- font-weight:700;
- letter-spacing:1.3px;
- margin-top:3px
-}
-
-/* LIVE */
-
-.live-banner{
- display:flex;
- align-items:center;
- gap:11px;
- padding:13px 14px;
- margin-bottom:16px;
- border:1px solid #47ef9d45;
- border-radius:22px;
- background:linear-gradient(110deg,#0c271a,#04130b);
- box-shadow:0 0 26px #19dc7810
-}
-
-.live-symbol{
- width:48px;
- height:48px;
- flex-shrink:0;
- border-radius:16px;
- display:grid;
- place-items:center;
- background:linear-gradient(145deg,#3bf39b,#08a65d);
- color:#03170b;
- font-size:21px;
- box-shadow:0 0 24px #26ed8a35,inset 0 2px 4px #ffffff55
-}
-
-.live-copy{
- flex:1;
- min-width:0
-}
-
-.eyebrow{
- font-size:8px;
- font-weight:900;
- letter-spacing:3px;
- color:#63ed9e;
- margin-bottom:3px
-}
-
-.live-copy h2{
- font-size:19px;
- letter-spacing:-.3px
-}
-
-.live-pill{
- white-space:nowrap;
- border:1px solid #40e98c59;
- border-radius:30px;
- padding:8px 9px;
- color:#54ec8f;
- font-size:8px;
- font-weight:900;
- background:#0b281a
-}
-
-.live-dot{
- display:inline-block;
- width:7px;
- height:7px;
- background:#42ed8d;
- border-radius:50%;
- margin-right:4px;
- box-shadow:0 0 9px #42ed8d
-}
-
-/* PAIR */
-
-.pair-card{
- position:relative;
- display:flex;
- align-items:center;
- padding:13px;
- margin-bottom:16px;
- min-height:76px;
- overflow:hidden;
- border:1px solid #4af09d66;
- border-radius:22px;
- background:
- radial-gradient(ellipse at right,#00be6e3d,transparent 65%),
- linear-gradient(120deg,#103523,#06160e);
- box-shadow:0 0 26px #00dc7814
-}
-
-.pair-icon{
- width:62px;
- height:46px;
- min-width:62px;
- border-radius:15px;
- display:flex;
- align-items:center;
- justify-content:center;
- gap:2px;
- background:linear-gradient(145deg,#174b32,#06130c);
- border:1px solid #56f4ac2b;
- box-shadow:0 6px 0 #030806,0 12px 20px #0006,inset 3px 3px 8px #ffffff14,inset -4px -5px 9px #0007
-}
-
-.flag-3d{
- font-size:22px;
- line-height:1;
- filter:drop-shadow(1px 3px 2px #000a)
-}
-
-.pair-text{
- margin-left:11px;
- flex:1;
- min-width:0
-}
-
-.pair-name{
- font-size:21px;
- font-weight:900;
- letter-spacing:-.4px
-}
-
-.pair-sub{
- color:#59e99e;
- font-size:8px;
- letter-spacing:.8px;
- margin-top:5px;
- font-weight:700
-}
-
-.pair-badge{
- font-size:9px;
- font-weight:900;
- color:#52e995;
- background:#0a291b;
- border:1px solid #45f0a33b;
- padding:8px 9px;
- border-radius:20px;
- white-space:nowrap
-}
-
-#assetSelect{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- opacity:0;
- cursor:pointer;
- z-index:5
-}
-
-/* COMMON CARD */
-
-.card{
- background:linear-gradient(145deg,#0b2117,#06110c);
- border:1px solid #ffffff0d;
- border-radius:21px;
- box-shadow:0 18px 60px #0005,0 0 24px #2deb9b09,inset 0 1px #ffffff06
-}
-
-.price-card{
- padding:15px;
- margin-bottom:12px
-}
-
-.section-label{
- color:#5be9a8;
- font-size:8px;
- font-weight:900;
- letter-spacing:1.7px;
- margin-bottom:7px
-}
-
-.current-price{
- font-size:27px;
- font-weight:900;
- letter-spacing:.7px
-}
-
-.price-change{
- margin-top:4px;
- font-size:9px;
- color:#a0b7aa
-}
-
-.up{color:#48e9a2}
-.down{color:#ff5f67}
-
-/* SIGNAL */
-
-.signal-card{
- padding:18px 15px 17px;
- text-align:center;
- margin-bottom:12px;
- position:relative;
- overflow:hidden;
- min-height:385px;
- border-radius:26px;
- border:1px solid #45f0a33d;
- background:
- radial-gradient(ellipse at 50% 35%,#00b46424,transparent 58%),
- linear-gradient(145deg,#0b2c1b,#041009 76%);
- box-shadow:0 0 30px #00dc7812,inset 0 1px #ffffff0a
-}
-
-.signal-topline{
- display:flex;
- align-items:center;
- justify-content:space-between;
- gap:7px;
- margin-bottom:16px
-}
-
-.signal-status,.duration-pill{
- display:inline-flex;
- align-items:center;
- gap:5px;
- padding:8px 10px;
- border:1px solid #ffffff1c;
- border-radius:30px;
- background:#ffffff08;
- color:#d5e5dc;
- font-size:8px;
- letter-spacing:1px;
- font-weight:800
-}
-
-.status-dot{
- width:7px;
- height:7px;
- border-radius:50%;
- background:var(--green);
- box-shadow:0 0 10px var(--green)
-}
-
-.duration-pill{
- letter-spacing:.5px;
- font-size:9px
-}
-
-.signal-orbit{
- width:142px;
- height:142px;
- border:2px solid #45f0a324;
- border-radius:50%;
- display:grid;
- place-items:center;
- margin:0 auto 13px
-}
-
-.signal-icon{
- width:104px;
- height:104px;
- border-radius:50%;
- display:flex;
- align-items:center;
- justify-content:center;
- font-size:53px;
- font-weight:900;
- color:#fff;
- background:
- radial-gradient(circle at 32% 25%,#5df6ad,#078c50 65%,#034d2c);
- border:2px solid #64ffb866;
- box-shadow:
- 0 0 0 7px #37f0960b,
- 0 0 30px #28f09133,
- inset 0 4px 10px #ffffff33,
- 0 10px 22px #0006
-}
-
-.signal-direction{
- font-size:38px;
- font-weight:1000;
- letter-spacing:1px;
- text-shadow:0 0 22px #46f09d20
-}
-
-.trade-caption{
- margin-top:6px;
- color:#c2d8ca;
- font-size:9px;
- font-weight:900;
- letter-spacing:3px
-}
-
-.signal-confidence{
- display:none
-}
-
-.timer{
- margin-top:12px;
- font-size:23px;
- font-weight:900;
- color:#52e8a4;
- letter-spacing:2px;
- text-shadow:0 0 15px #52e8a440
-}
-
-/* CONFIDENCE */
-
-.confidence-card{
- display:flex;
- align-items:center;
- gap:14px;
- padding:15px;
- margin-bottom:12px;
- border-radius:22px;
- background:linear-gradient(120deg,#091d14,#07150f);
- border:1px solid #ffffff12;
- box-shadow:0 12px 35px #0003
-}
-
-.confidence-ring{
- width:88px;
- height:88px;
- flex-shrink:0;
- position:relative;
- display:grid;
- place-items:center
-}
-
-.confidence-ring svg{
- position:absolute;
- inset:0;
- width:100%;
- height:100%;
- transform:rotate(-90deg)
-}
-
-.ring-track{
- fill:none;
- stroke:#1a3327;
- stroke-width:7
-}
-
-.ring-progress{
- fill:none;
- stroke:var(--green);
- stroke-width:7;
- stroke-linecap:round;
- stroke-dasharray:289;
- stroke-dashoffset:144;
- transition:stroke-dashoffset .3s
-}
-
-.confidence-number{
- font-size:22px;
- font-weight:900;
- color:#baffd1
-}
-
-.confidence-copy{
- flex:1;
- min-width:0
-}
-
-.confidence-heading{
- color:#a3b8ac;
- font-size:9px;
- margin-bottom:7px
-}
-
-.target-icon{
- color:#55efa0;
- margin-right:5px
-}
-
-.confidence-level{
- color:#47e99a;
- font-size:18px;
- font-weight:900;
- margin-bottom:5px
-}
-
-.confidence-note{
- color:#9cb2a5;
- font-size:10px;
- line-height:1.45
-}
-
-/* INFO */
-
-.signal-info{
- display:grid;
- grid-template-columns:repeat(2,minmax(0,1fr));
- gap:10px;
- margin-bottom:12px
-}
-
-.info-box{
- padding:14px 12px;
- min-height:88px;
- border-radius:20px;
- background:linear-gradient(145deg,#0c291b,#06140c);
- border:1px solid #45f0a32a;
- box-shadow:0 10px 25px #0003,inset 0 1px #ffffff09
-}
-
-.info-heading{
- display:flex;
- align-items:center;
- gap:7px;
- color:#a7bdb0;
- font-size:8px;
- letter-spacing:1px;
- font-weight:800
-}
-
-.info-icon{
- width:30px;
- height:30px;
- display:grid;
- place-items:center;
- border-radius:11px;
- background:#2be99a18;
- border:1px solid #45f0a332;
- color:#53eda2;
- font-size:15px
-}
-
-.info-value{
- font-size:20px;
- font-weight:900;
- margin-top:10px;
- letter-spacing:.4px
-}
-
-/* BUTTON */
-
-.generate-btn{
- width:100%;
- height:50px;
- border-radius:16px;
- font-size:10px;
- letter-spacing:1.2px;
- margin:2px 0 14px;
- box-shadow:0 10px 28px #28eb9b2e,0 0 30px #28eb9b14;
- transition:.2s
-}
-
-.generate-btn:hover{
- transform:translateY(-1px)
-}
-
-.generate-btn:disabled{
- opacity:.7;
- cursor:not-allowed
-}
-
-.generate-btn.waiting{
- background:linear-gradient(135deg,#17382b,#204b38);
- color:#64e8aa
-}
-
-/* ANALYSIS */
-
-.analysis-card,.recent-card,.stats-card{
- padding:15px;
- margin-bottom:12px
-}
-
-.analysis-grid{
- display:grid;
- grid-template-columns:repeat(2,1fr);
- gap:7px
-}
-
-.analysis-item{
- padding:10px;
- border-radius:13px;
- background:#ffffff06;
- border:1px solid #ffffff0a
-}
-
-.analysis-name{
- color:#738a80;
- font-size:7px;
- letter-spacing:1px;
- margin-bottom:5px
-}
-
-.analysis-value{
- font-size:9px;
- font-weight:800;
- word-break:break-word
-}
-
-/* RECENT */
-
-.recent-list{
- display:flex;
- flex-direction:column;
- gap:6px
-}
-
-.recent-empty{
- text-align:center;
- padding:14px;
- color:#657a71;
- font-size:9px
-}
-
-.recent-item{
- display:flex;
- align-items:center;
- justify-content:space-between;
- padding:9px 10px;
- border-radius:12px;
- background:#ffffff06;
- border:1px solid #ffffff0a
-}
-
-.recent-left{
- display:flex;
- align-items:center;
- gap:7px
-}
-
-.recent-dot{
- width:7px;
- height:7px;
- border-radius:50%;
- background:var(--green);
- box-shadow:0 0 10px #45f0a399
-}
-
-.recent-direction{
- font-size:9px;
- font-weight:900
-}
-
-.recent-time{
- color:#72877d;
- font-size:8px
-}
-
-/* STATS */
-
-.stats-grid{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:7px
-}
-
-.stat-box{
- padding:11px 6px;
- text-align:center;
- border-radius:13px;
- background:#ffffff06;
- border:1px solid #ffffff0a
-}
-
-.stat-number{
- font-size:17px;
- font-weight:900
-}
-
-.stat-label{
- color:#71877d;
- font-size:7px;
- letter-spacing:1px;
- margin-top:4px
-}
-
-/* PUT */
-
-.signal-card.put-active{
- border-color:#ff405580;
- background:
- radial-gradient(ellipse at 50% 35%,#ff233326,transparent 60%),
- linear-gradient(145deg,#351313,#150708 78%);
- box-shadow:0 0 26px #ff233317
-}
-
-.put-active .signal-orbit{
- border-color:#ff40553b
-}
-
-.put-active .signal-icon{
- background:
- radial-gradient(circle at 32% 25%,#ff9292,#e71935 62%,#780518);
- border-color:#ff646e8c;
- box-shadow:
- 0 0 0 7px #ff2d410f,
- 0 0 30px #ff23353b,
- inset 0 4px 10px #ffffff33,
- 0 10px 22px #0006
-}
-
-.put-active .signal-direction{
- color:#ff6b78;
- text-shadow:0 0 20px #ff2d4130
-}
-
-.put-active .status-dot{
- background:#ff4055;
- box-shadow:0 0 10px #ff4055
-}
-
-.put-active .ring-progress{
- stroke:#ff4055
-}
-
-.signal-card.call-active{
- border-color:#45f0a36b
-}
-
-.call-active .signal-direction{
- color:#45f0a3
-}
-
-/* SMALL MOBILE */
-
+.brand-ai{color:var(--green);text-shadow:0 0 12px #45f0a38c,0 0 28px #45f0a340}
+.access-sub{color:#52e8a4;font-size:10px;letter-spacing:2px;margin-bottom:28px}
+.access-input{width:100%;height:52px;border-radius:15px;border:1px solid #ffffff14;outline:none;background:#050d09;color:#fff;padding:0 16px;text-align:center;letter-spacing:2px;font-size:14px;margin-bottom:14px}
+.access-input:focus{border-color:#45f0a380;box-shadow:0 0 20px #45f0a314}
+.access-btn,.generate-btn{border:0;background:linear-gradient(135deg,#2be99a,#43f0a5);color:#03110a;font-weight:900;cursor:pointer;box-shadow:0 8px 20px #2ae99a2e}
+.access-btn{width:100%;height:52px;border-radius:15px;letter-spacing:1px}
+.access-error{display:none;color:#ff5c5c;font-size:11px;margin-top:12px}
+#mainApp{display:none;width:100%;max-width:680px;margin:0 auto;padding:14px 12px 32px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:9px;min-height:68px;padding:9px 12px;margin-bottom:16px;border:1px solid #4af0a347;border-radius:23px;background:linear-gradient(110deg,#071b12,#031009);box-shadow:0 0 28px #19dc7817,inset 0 1px #ffffff0a}
+.menu-btn,.header-avatar{width:42px;height:42px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#142d22,#07110d);border:1px solid #ffffff12;box-shadow:0 8px 20px #0005}
+.menu-btn{color:var(--green);font-size:19px;cursor:pointer}
+.header-avatar{padding:3px;border-color:#45f0a359;box-shadow:0 0 16px #45f0a326;overflow:hidden;background:#0b1912}
+.logo-title{text-align:center;flex:1;min-width:0}
+.logo-title h1{font-size:23px;letter-spacing:-.5px;font-weight:900}
+.logo-title>span{display:block;color:#48e9a2;font-size:7px;font-weight:700;letter-spacing:1.3px;margin-top:3px}
+.live-banner{display:flex;align-items:center;gap:11px;padding:13px 14px;margin-bottom:16px;border:1px solid #47ef9d45;border-radius:22px;background:linear-gradient(110deg,#0c271a,#04130b);box-shadow:0 0 26px #19dc7810}
+.live-symbol{width:48px;height:48px;flex-shrink:0;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#3bf39b,#08a65d);color:#03170b;font-size:21px;box-shadow:0 0 24px #26ed8a35}
+.live-copy{flex:1;min-width:0}
+.eyebrow{font-size:8px;font-weight:900;letter-spacing:3px;color:#63ed9e;margin-bottom:3px}
+.live-copy h2{font-size:19px}
+.live-pill{white-space:nowrap;border:1px solid #40e98c59;border-radius:30px;padding:8px 9px;color:#54ec8f;font-size:8px;font-weight:900;background:#0b281a}
+.live-dot{display:inline-block;width:7px;height:7px;background:#42ed8d;border-radius:50%;margin-right:4px;box-shadow:0 0 9px #42ed8d}
+.pair-card{position:relative;display:flex;align-items:center;padding:13px;margin-bottom:16px;min-height:76px;overflow:hidden;border:1px solid #4af09d66;border-radius:22px;background:radial-gradient(ellipse at right,#00be6e3d,transparent 65%),linear-gradient(120deg,#103523,#06160e);box-shadow:0 0 26px #00dc7814}
+.pair-icon{width:62px;height:46px;min-width:62px;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:2px;background:linear-gradient(145deg,#174b32,#06130c);border:1px solid #56f4ac2b;box-shadow:0 6px 0 #030806,0 12px 20px #0006}
+.flag-3d{font-size:22px;line-height:1;filter:drop-shadow(1px 3px 2px #000a)}
+.pair-text{margin-left:11px;flex:1;min-width:0}
+.pair-name{font-size:21px;font-weight:900;letter-spacing:-.4px}
+.pair-sub{color:#59e99e;font-size:8px;letter-spacing:.8px;margin-top:5px;font-weight:700}
+.pair-badge{font-size:9px;font-weight:900;color:#52e995;background:#0a291b;border:1px solid #45f0a33b;padding:8px 9px;border-radius:20px;white-space:nowrap}
+#assetSelect{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:5}
+.card{background:linear-gradient(145deg,#0b2117,#06110c);border:1px solid #ffffff0d;border-radius:21px;box-shadow:0 18px 60px #0005,0 0 24px #2deb9b09}
+.price-card{padding:15px;margin-bottom:12px}
+.section-label{color:#5be9a8;font-size:8px;font-weight:900;letter-spacing:1.7px;margin-bottom:7px}
+.current-price{font-size:27px;font-weight:900;letter-spacing:.7px}
+.price-change{margin-top:4px;font-size:9px;color:#a0b7aa}
+.up{color:#48e9a2}.down{color:#ff5f67}
+.signal-card{padding:18px 15px 17px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden;min-height:385px;border-radius:26px;border:1px solid #45f0a33d;background:radial-gradient(ellipse at 50% 35%,#00b46424,transparent 58%),linear-gradient(145deg,#0b2c1b,#041009 76%);box-shadow:0 0 30px #00dc7812}
+.signal-topline{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:16px}
+.signal-status,.duration-pill{display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid #ffffff1c;border-radius:30px;background:#ffffff08;color:#d5e5dc;font-size:8px;letter-spacing:1px;font-weight:800}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+.duration-pill{letter-spacing:.5px;font-size:9px}
+.signal-orbit{width:142px;height:142px;border:2px solid #45f0a324;border-radius:50%;display:grid;place-items:center;margin:0 auto 13px}
+.signal-icon{width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:53px;font-weight:900;color:#fff;background:radial-gradient(circle at 32% 25%,#5df6ad,#078c50 65%,#034d2c);border:2px solid #64ffb866;box-shadow:0 0 0 7px #37f0960b,0 0 30px #28f09133,inset 0 4px 10px #ffffff33,0 10px 22px #0006}
+.signal-direction{font-size:38px;font-weight:1000;letter-spacing:1px;text-shadow:0 0 22px #46f09d20}
+.trade-caption{margin-top:6px;color:#c2d8ca;font-size:9px;font-weight:900;letter-spacing:3px}
+.signal-confidence{display:none}
+.timer{margin-top:12px;font-size:23px;font-weight:900;color:#52e8a4;letter-spacing:2px}
+.confidence-card{display:flex;align-items:center;gap:14px;padding:15px;margin-bottom:12px;border-radius:22px;background:linear-gradient(120deg,#091d14,#07150f);border:1px solid #ffffff12;box-shadow:0 12px 35px #0003}
+.confidence-ring{width:88px;height:88px;flex-shrink:0;position:relative;display:grid;place-items:center}
+.confidence-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.ring-track{fill:none;stroke:#1a3327;stroke-width:7}
+.ring-progress{fill:none;stroke:var(--green);stroke-width:7;stroke-linecap:round;stroke-dasharray:289;stroke-dashoffset:289;transition:stroke-dashoffset .3s}
+.confidence-number{font-size:22px;font-weight:900;color:#baffd1}
+.confidence-copy{flex:1;min-width:0}
+.confidence-heading{color:#a3b8ac;font-size:9px;margin-bottom:7px}
+.target-icon{color:#55efa0;margin-right:5px}
+.confidence-level{color:#47e99a;font-size:18px;font-weight:900;margin-bottom:5px}
+.confidence-note{color:#9cb2a5;font-size:10px;line-height:1.45}
+.signal-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.info-box{padding:14px 12px;min-height:88px;border-radius:20px;background:linear-gradient(145deg,#0c291b,#06140c);border:1px solid #45f0a32a}
+.info-heading{display:flex;align-items:center;gap:7px;color:#a7bdb0;font-size:8px;letter-spacing:1px;font-weight:800}
+.info-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:11px;background:#2be99a18;border:1px solid #45f0a332;color:#53eda2;font-size:15px}
+.info-value{font-size:20px;font-weight:900;margin-top:10px;letter-spacing:.4px}
+.generate-btn{width:100%;height:50px;border-radius:16px;font-size:10px;letter-spacing:1.2px;margin:2px 0 14px;box-shadow:0 10px 28px #28eb9b2e;transition:.2s}
+.generate-btn:hover{transform:translateY(-1px)}
+.generate-btn:disabled{opacity:.7;cursor:not-allowed}
+.generate-btn.waiting{background:linear-gradient(135deg,#17382b,#204b38);color:#64e8aa}
+.analysis-card,.recent-card,.stats-card{padding:15px;margin-bottom:12px}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}
+.analysis-item{padding:10px;border-radius:13px;background:#ffffff06;border:1px solid #ffffff0a}
+.analysis-name{color:#738a80;font-size:7px;letter-spacing:1px;margin-bottom:5px}
+.analysis-value{font-size:9px;font-weight:800;word-break:break-word}
+.recent-list{display:flex;flex-direction:column;gap:6px}
+.recent-empty{text-align:center;padding:14px;color:#657a71;font-size:9px}
+.recent-item{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border-radius:12px;background:#ffffff06;border:1px solid #ffffff0a}
+.recent-left{display:flex;align-items:center;gap:7px}
+.recent-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px #45f0a399}
+.recent-direction{font-size:9px;font-weight:900}
+.recent-time{color:#72877d;font-size:8px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.stat-box{padding:11px 6px;text-align:center;border-radius:13px;background:#ffffff06;border:1px solid #ffffff0a}
+.stat-number{font-size:17px;font-weight:900}
+.stat-label{color:#71877d;font-size:7px;letter-spacing:1px;margin-top:4px}
+.signal-card.put-active{border-color:#ff405580;background:radial-gradient(ellipse at 50% 35%,#ff233326,transparent 60%),linear-gradient(145deg,#351313,#150708 78%);box-shadow:0 0 26px #ff233317}
+.put-active .signal-orbit{border-color:#ff40553b}
+.put-active .signal-icon{background:radial-gradient(circle at 32% 25%,#ff9292,#e71935 62%,#780518);border-color:#ff646e8c;box-shadow:0 0 0 7px #ff2d410f,0 0 30px #ff23353b,inset 0 4px 10px #ffffff33,0 10px 22px #0006}
+.put-active .signal-direction{color:#ff6b78}
+.put-active .status-dot{background:#ff4055;box-shadow:0 0 10px #ff4055}
+.put-active .ring-progress{stroke:#ff4055}
+.signal-card.call-active{border-color:#45f0a36b}
+.call-active .signal-direction{color:#45f0a3}
 @media(max-width:380px){
-
- #mainApp{
-  padding:10px 8px 25px
- }
-
- .header{
-  min-height:64px;
-  padding:8px 9px;
-  margin-bottom:13px
- }
-
- .menu-btn,.header-avatar{
-  width:39px;
-  height:39px
- }
-
- .logo-title h1{
-  font-size:20px
- }
-
- .logo-title>span{
-  font-size:6px
- }
-
- .live-banner{
-  padding:11px;
-  margin-bottom:13px
- }
-
- .live-symbol{
-  width:44px;
-  height:44px;
-  font-size:19px
- }
-
- .live-copy h2{
-  font-size:17px
- }
-
- .live-pill{
-  font-size:7px;
-  padding:7px
- }
-
- .pair-card{
-  padding:11px;
-  min-height:69px;
-  margin-bottom:13px
- }
-
- .pair-icon{
-  width:56px;
-  min-width:56px;
-  height:42px
- }
-
- .flag-3d{
-  font-size:19px
- }
-
- .pair-name{
-  font-size:18px
- }
-
- .pair-badge{
-  font-size:8px;
-  padding:7px
- }
-
- .signal-card{
-  min-height:360px;
-  padding:15px 10px
- }
-
- .signal-orbit{
-  width:130px;
-  height:130px
- }
-
- .signal-icon{
-  width:94px;
-  height:94px;
-  font-size:47px
- }
-
- .signal-direction{
-  font-size:34px
- }
-
- .confidence-ring{
-  width:78px;
-  height:78px
- }
-
- .confidence-number{
-  font-size:19px
- }
-
- .confidence-level{
-  font-size:16px
- }
-
- .info-value{
-  font-size:18px
- }
+ #mainApp{padding:10px 8px 25px}
+ .header{min-height:64px;padding:8px 9px;margin-bottom:13px}
+ .menu-btn,.header-avatar{width:39px;height:39px}
+ .logo-title h1{font-size:20px}
+ .logo-title>span{font-size:6px}
+ .live-banner{padding:11px;margin-bottom:13px}
+ .live-symbol{width:44px;height:44px;font-size:19px}
+ .live-copy h2{font-size:17px}
+ .live-pill{font-size:7px;padding:7px}
+ .pair-card{padding:11px;min-height:69px;margin-bottom:13px}
+ .pair-icon{width:56px;min-width:56px;height:42px}
+ .flag-3d{font-size:19px}
+ .pair-name{font-size:18px}
+ .pair-badge{font-size:8px;padding:7px}
+ .signal-card{min-height:360px;padding:15px 10px}
+ .signal-orbit{width:130px;height:130px}
+ .signal-icon{width:94px;height:94px;font-size:47px}
+ .signal-direction{font-size:34px}
+ .confidence-ring{width:78px;height:78px}
+ .confidence-number{font-size:19px}
+ .confidence-level{font-size:16px}
+ .info-value{font-size:18px}
 }
 </style>
 </head>
-
 <body>
 
 <div id="accessScreen">
  <div class="access-card">
-
-  <!-- CHANGE 1: PECO LOGO ON ACCESS SCREEN -->
   <div class="access-logo">
-   <img src="peco-logo.png" alt="PECO AI Logo">
+   <svg class="peco-svg-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PECO AI Emerald Flame Logo">
+    <defs>
+     <linearGradient id="emeraldFlame" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#19F59A"/>
+      <stop offset="42%" stop-color="#71F06B"/>
+      <stop offset="72%" stop-color="#D4F56A"/>
+      <stop offset="100%" stop-color="#FFD166"/>
+     </linearGradient>
+    </defs>
+    <rect x="5" y="5" width="90" height="90" rx="26" fill="#0b1912" stroke="#28583b" stroke-width="1.5"/>
+    <path d="M29 73V27H51C67 27 70 48 52 51H29" fill="none" stroke="url(#emeraldFlame)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M35 66L47 56L56 60L72 39" fill="none" stroke="#f1ffe6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M61 39H72V50" fill="none" stroke="#D4F56A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="72" cy="39" r="3.5" fill="#FFD166"/>
+   </svg>
   </div>
-
   <h1><span class="brand-peco">PECO</span> <span class="brand-ai">AI</span></h1>
   <div class="access-sub">BINARY SIGNALS ANALYSIS</div>
-
-  <input
-   type="password"
-   id="accessKey"
-   class="access-input"
-   placeholder="ENTER ACCESS KEY"
-  >
-
-  <button class="access-btn" onclick="checkAccess()">
-   ENTER PECO AI
-  </button>
-
-  <div id="accessError" class="access-error">
-   INVALID ACCESS KEY
-  </div>
+  <input type="password" id="accessKey" class="access-input" placeholder="ENTER ACCESS KEY">
+  <button class="access-btn" onclick="checkAccess()">ENTER PECO AI</button>
+  <div id="accessError" class="access-error">INVALID ACCESS KEY</div>
  </div>
 </div>
 
 <div id="mainApp">
-
  <div class="header">
   <button class="menu-btn" aria-label="Menu">☰</button>
-
   <div class="logo-title">
-   <h1>
-    <span class="brand-peco">PECO</span>
-    <span class="brand-ai">AI</span>
-   </h1>
+   <h1><span class="brand-peco">PECO</span> <span class="brand-ai">AI</span></h1>
    <span>BINARY SIGNALS ANALYSIS</span>
   </div>
-
-  <!-- CHANGE 2: PECO LOGO IN HEADER -->
   <div class="header-avatar">
-   <img src="peco-logo.png" alt="PECO AI Logo">
+   <svg class="peco-svg-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PECO AI Logo">
+    <defs>
+     <linearGradient id="emeraldFlameHeader" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#19F59A"/>
+      <stop offset="42%" stop-color="#71F06B"/>
+      <stop offset="72%" stop-color="#D4F56A"/>
+      <stop offset="100%" stop-color="#FFD166"/>
+     </linearGradient>
+    </defs>
+    <rect x="5" y="5" width="90" height="90" rx="26" fill="#0b1912" stroke="#28583b" stroke-width="1.5"/>
+    <path d="M29 73V27H51C67 27 70 48 52 51H29" fill="none" stroke="url(#emeraldFlameHeader)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M35 66L47 56L56 60L72 39" fill="none" stroke="#f1ffe6" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M61 39H72V50" fill="none" stroke="#D4F56A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="72" cy="39" r="3.5" fill="#FFD166"/>
+   </svg>
   </div>
  </div>
 
  <div class="live-banner">
   <div class="live-symbol">◉</div>
-  <div class="live-copy">
-   <div class="eyebrow">PECO AI</div>
-   <h2>Live Signals</h2>
-  </div>
-  <div class="live-pill">
-   <span class="live-dot"></span>
-   <span id="liveState">SIGNAL READY</span>
-  </div>
+  <div class="live-copy"><div class="eyebrow">PECO AI</div><h2>Live Signals</h2></div>
+  <div class="live-pill"><span class="live-dot"></span><span id="liveState">SIGNAL READY</span></div>
  </div>
 
  <div class="pair-card">
   <div class="pair-icon" id="pairIcon"></div>
-  <div class="pair-text">
-   <div class="pair-name" id="pairName">EUR/USD</div>
-   <div class="pair-sub">1 MIN · REAL MARKET</div>
-  </div>
+  <div class="pair-text"><div class="pair-name" id="pairName">EUR/USD</div><div class="pair-sub">1 MIN · REAL MARKET</div></div>
   <div class="pair-badge" id="pairBadge">READY</div>
   <select id="assetSelect" onchange="changeAsset()" aria-label="Choose currency pair"></select>
  </div>
@@ -1029,17 +211,10 @@ button,input,select{font:inherit}
 
  <div class="signal-card" id="signalCard">
   <div class="signal-topline">
-   <div class="signal-status">
-    <span class="status-dot"></span>
-    <span id="signalStatus">READY FOR ANALYSIS</span>
-   </div>
+   <div class="signal-status"><span class="status-dot"></span><span id="signalStatus">READY FOR ANALYSIS</span></div>
    <div class="duration-pill">◷ &nbsp;1 MIN</div>
   </div>
-
-  <div class="signal-orbit">
-   <div class="signal-icon" id="signalIcon">—</div>
-  </div>
-
+  <div class="signal-orbit"><div class="signal-icon" id="signalIcon">—</div></div>
   <div class="signal-direction" id="signalDirection">WAIT</div>
   <div class="trade-caption" id="tradeCaption">⌄ &nbsp;WAIT FOR SETUP</div>
   <div class="signal-confidence" id="signalConfidence">AI CONFIDENCE: --</div>
@@ -1054,159 +229,90 @@ button,input,select{font:inherit}
    </svg>
    <div class="confidence-number" id="confidenceNumber">--%</div>
   </div>
-
   <div class="confidence-copy">
-   <div class="confidence-heading">
-    <span class="target-icon">◎</span>
-    CONFIDENCE
-   </div>
+   <div class="confidence-heading"><span class="target-icon">◎</span> CONFIDENCE</div>
    <div class="confidence-level" id="confidenceLevel">Waiting for signal</div>
    <div class="confidence-note" id="confidenceNote">AI conviction for this 1-minute setup.</div>
   </div>
  </div>
 
  <div class="signal-info">
-  <div class="info-box">
-   <div class="info-heading">
-    <span class="info-icon">◷</span>
-    ENTRY TIME
-   </div>
-   <div class="info-value" id="entryTime">--:--</div>
-  </div>
-
-  <div class="info-box">
-   <div class="info-heading">
-    <span class="info-icon">◴</span>
-    DURATION
-   </div>
-   <div class="info-value">1 min</div>
-  </div>
+  <div class="info-box"><div class="info-heading"><span class="info-icon">◷</span> ENTRY TIME</div><div class="info-value" id="entryTime">--:--</div></div>
+  <div class="info-box"><div class="info-heading"><span class="info-icon">◴</span> DURATION</div><div class="info-value">1 min</div></div>
  </div>
 
  <div class="price-card card">
-  <div id="tradeExplanation" style="font-size:11px;line-height:1.6;color:#9cb2a5">
-   Wait for a signal before placing a trade.
-   Signals are analysis estimates, not guaranteed outcomes.
-  </div>
-  <div style="margin-top:10px;color:#71877d;font-size:8px">
-   SIGNAL RESULT:
-   <strong id="signalResult" style="color:#fff">WAIT</strong>
-  </div>
+  <div id="tradeExplanation" style="font-size:11px;line-height:1.6;color:#9cb2a5">Wait for a signal before placing a trade. Signals are analysis estimates, not guaranteed outcomes.</div>
+  <div style="margin-top:10px;color:#71877d;font-size:8px">SIGNAL RESULT: <strong id="signalResult" style="color:#fff">WAIT</strong></div>
  </div>
 
- <button id="generateBtn" class="generate-btn" onclick="manualAnalyze()">
-  GENERATE SIGNAL
- </button>
+ <button id="generateBtn" class="generate-btn" onclick="manualAnalyze()">GENERATE SIGNAL</button>
 
  <div class="analysis-card card">
   <div class="section-label">AI MARKET ANALYSIS</div>
   <div class="analysis-grid">
-   <div class="analysis-item">
-    <div class="analysis-name">TREND</div>
-    <div class="analysis-value" id="trendValue">WAITING</div>
-   </div>
-   <div class="analysis-item">
-    <div class="analysis-name">MOMENTUM</div>
-    <div class="analysis-value" id="momentumValue">WAITING</div>
-   </div>
-   <div class="analysis-item">
-    <div class="analysis-name">PATTERN</div>
-    <div class="analysis-value" id="patternValue">WAITING</div>
-   </div>
-   <div class="analysis-item">
-    <div class="analysis-name">MARKET</div>
-    <div class="analysis-value" id="marketValue">REAL MARKET</div>
-   </div>
+   <div class="analysis-item"><div class="analysis-name">TREND</div><div class="analysis-value" id="trendValue">WAITING</div></div>
+   <div class="analysis-item"><div class="analysis-name">MOMENTUM</div><div class="analysis-value" id="momentumValue">WAITING</div></div>
+   <div class="analysis-item"><div class="analysis-name">PATTERN</div><div class="analysis-value" id="patternValue">WAITING</div></div>
+   <div class="analysis-item"><div class="analysis-name">MARKET</div><div class="analysis-value" id="marketValue">REAL MARKET</div></div>
   </div>
  </div>
 
- <div class="recent-card card">
-  <div class="section-label">RECENT SIGNALS</div>
-  <div class="recent-list" id="recentList">
-   <div class="recent-empty">No signals yet</div>
-  </div>
- </div>
+ <div class="recent-card card"><div class="section-label">RECENT SIGNALS</div><div class="recent-list" id="recentList"><div class="recent-empty">No signals yet</div></div></div>
 
  <div class="stats-card card">
   <div class="section-label">SIGNAL STATISTICS</div>
   <div class="stats-grid">
-   <div class="stat-box">
-    <div class="stat-number" id="winCount">0</div>
-    <div class="stat-label">WINS</div>
-   </div>
-   <div class="stat-box">
-    <div class="stat-number" id="lossCount">0</div>
-    <div class="stat-label">LOSSES</div>
-   </div>
-   <div class="stat-box">
-    <div class="stat-number" id="accuracy">0%</div>
-    <div class="stat-label">ACCURACY</div>
-   </div>
+   <div class="stat-box"><div class="stat-number" id="winCount">0</div><div class="stat-label">WINS</div></div>
+   <div class="stat-box"><div class="stat-number" id="lossCount">0</div><div class="stat-label">LOSSES</div></div>
+   <div class="stat-box"><div class="stat-number" id="accuracy">0%</div><div class="stat-label">ACCURACY</div></div>
   </div>
  </div>
-
 </div>
 
 <script>
 const REAL_API="https://biquote.io/api/";
 
 const realAssets=[
- {name:"EUR/USD",symbol:"EURUSD",flags:["🇪🇺","🇺🇸"]},
- {name:"GBP/USD",symbol:"GBPUSD",flags:["🇬🇧","🇺🇸"]},
- {name:"USD/JPY",symbol:"USDJPY",flags:["🇺🇸","🇯🇵"]},
- {name:"AUD/USD",symbol:"AUDUSD",flags:["🇦🇺","🇺🇸"]},
- {name:"USD/CAD",symbol:"USDCAD",flags:["🇺🇸","🇨🇦"]},
- {name:"USD/CHF",symbol:"USDCHF",flags:["🇺🇸","🇨🇭"]},
- {name:"NZD/USD",symbol:"NZDUSD",flags:["🇳🇿","🇺🇸"]},
- {name:"EUR/GBP",symbol:"EURGBP",flags:["🇪🇺","🇬🇧"]},
- {name:"EUR/JPY",symbol:"EURJPY",flags:["🇪🇺","🇯🇵"]},
- {name:"EUR/CHF",symbol:"EURCHF",flags:["🇪🇺","🇨🇭"]},
- {name:"EUR/AUD",symbol:"EURAUD",flags:["🇪🇺","🇦🇺"]},
- {name:"EUR/CAD",symbol:"EURCAD",flags:["🇪🇺","🇨🇦"]},
- {name:"EUR/NZD",symbol:"EURNZD",flags:["🇪🇺","🇳🇿"]},
- {name:"GBP/JPY",symbol:"GBPJPY",flags:["🇬🇧","🇯🇵"]},
- {name:"GBP/CHF",symbol:"GBPCHF",flags:["🇬🇧","🇨🇭"]},
- {name:"GBP/AUD",symbol:"GBPAUD",flags:["🇬🇧","🇦🇺"]},
- {name:"GBP/CAD",symbol:"GBPCAD",flags:["🇬🇧","🇨🇦"]},
- {name:"GBP/NZD",symbol:"GBPNZD",flags:["🇬🇧","🇳🇿"]},
- {name:"AUD/JPY",symbol:"AUDJPY",flags:["🇦🇺","🇯🇵"]},
- {name:"AUD/CAD",symbol:"AUDCAD",flags:["🇦🇺","🇨🇦"]},
- {name:"AUD/CHF",symbol:"AUDCHF",flags:["🇦🇺","🇨🇭"]},
- {name:"AUD/NZD",symbol:"AUDNZD",flags:["🇦🇺","🇳🇿"]},
- {name:"CAD/JPY",symbol:"CADJPY",flags:["🇨🇦","🇯🇵"]},
- {name:"CAD/CHF",symbol:"CADCHF",flags:["🇨🇦","🇨🇭"]},
- {name:"CHF/JPY",symbol:"CHFJPY",flags:["🇨🇭","🇯🇵"]},
- {name:"NZD/JPY",symbol:"NZDJPY",flags:["🇳🇿","🇯🇵"]},
- {name:"NZD/CAD",symbol:"NZDCAD",flags:["🇳🇿","🇨🇦"]},
- {name:"NZD/CHF",symbol:"NZDCHF",flags:["🇳🇿","🇨🇭"]}
+{name:"EUR/USD",symbol:"EURUSD",flags:["🇪🇺","🇺🇸"]},
+{name:"GBP/USD",symbol:"GBPUSD",flags:["🇬🇧","🇺🇸"]},
+{name:"USD/JPY",symbol:"USDJPY",flags:["🇺🇸","🇯🇵"]},
+{name:"AUD/USD",symbol:"AUDUSD",flags:["🇦🇺","🇺🇸"]},
+{name:"USD/CAD",symbol:"USDCAD",flags:["🇺🇸","🇨🇦"]},
+{name:"USD/CHF",symbol:"USDCHF",flags:["🇺🇸","🇨🇭"]},
+{name:"NZD/USD",symbol:"NZDUSD",flags:["🇳🇿","🇺🇸"]},
+{name:"EUR/GBP",symbol:"EURGBP",flags:["🇪🇺","🇬🇧"]},
+{name:"EUR/JPY",symbol:"EURJPY",flags:["🇪🇺","🇯🇵"]},
+{name:"EUR/CHF",symbol:"EURCHF",flags:["🇪🇺","🇨🇭"]},
+{name:"EUR/AUD",symbol:"EURAUD",flags:["🇪🇺","🇦🇺"]},
+{name:"EUR/CAD",symbol:"EURCAD",flags:["🇪🇺","🇨🇦"]},
+{name:"EUR/NZD",symbol:"EURNZD",flags:["🇪🇺","🇳🇿"]},
+{name:"GBP/JPY",symbol:"GBPJPY",flags:["🇬🇧","🇯🇵"]},
+{name:"GBP/CHF",symbol:"GBPCHF",flags:["🇬🇧","🇨🇭"]},
+{name:"GBP/AUD",symbol:"GBPAUD",flags:["🇬🇧","🇦🇺"]},
+{name:"GBP/CAD",symbol:"GBPCAD",flags:["🇬🇧","🇨🇦"]},
+{name:"GBP/NZD",symbol:"GBPNZD",flags:["🇬🇧","🇳🇿"]},
+{name:"AUD/JPY",symbol:"AUDJPY",flags:["🇦🇺","🇯🇵"]},
+{name:"AUD/CAD",symbol:"AUDCAD",flags:["🇦🇺","🇨🇦"]},
+{name:"AUD/CHF",symbol:"AUDCHF",flags:["🇦🇺","🇨🇭"]},
+{name:"AUD/NZD",symbol:"AUDNZD",flags:["🇦🇺","🇳🇿"]},
+{name:"CAD/JPY",symbol:"CADJPY",flags:["🇨🇦","🇯🇵"]},
+{name:"CAD/CHF",symbol:"CADCHF",flags:["🇨🇦","🇨🇭"]},
+{name:"CHF/JPY",symbol:"CHFJPY",flags:["🇨🇭","🇯🇵"]},
+{name:"NZD/JPY",symbol:"NZDJPY",flags:["🇳🇿","🇯🇵"]},
+{name:"NZD/CAD",symbol:"NZDCAD",flags:["🇳🇿","🇨🇦"]},
+{name:"NZD/CHF",symbol:"NZDCHF",flags:["🇳🇿","🇨🇭"]}
 ];
 
-let selectedAsset=realAssets[0];
-let currentPrice=null;
-let previousPrice=null;
-let priceHistory=[];
-let candleHistory=[];
-let signal="WAIT";
-let signalExpiry=0;
-let lastSignalPrice=null;
-let lastSignalDirection=null;
-let lastSignalTime=null;
-let signalArmed=false;
-let totalWins=0;
-let totalLosses=0;
-let totalDraws=0;
-let recentSignals=[];
-let priceTimer=null;
-let candleTimer=null;
-let pendingSignal=null;
-let confirmationBusy=false;
-let dataLoading=false;
-let lastLoadedCandleTime=null;
+let selectedAsset=realAssets[0],currentPrice=null,previousPrice=null;
+let priceHistory=[],candleHistory=[],signal="WAIT",signalExpiry=0;
+let lastSignalPrice=null,lastSignalDirection=null,lastSignalTime=null;
+let signalArmed=false,totalWins=0,totalLosses=0,totalDraws=0;
+let recentSignals=[],priceTimer=null,candleTimer=null,pendingSignal=null;
+let confirmationBusy=false,dataLoading=false,lastLoadedCandleTime=null;
 let lastSignalConfidence=0;
-
 const $=id=>document.getElementById(id);
 
-/* ACCESS */
 function checkAccess(){
  const key=$("accessKey").value.trim();
  if(key==="PECO 2026"){
@@ -1214,37 +320,22 @@ function checkAccess(){
   $("accessScreen").style.display="none";
   $("mainApp").style.display="block";
   initializePECO();
- }else{
-  $("accessError").style.display="block";
- }
+ }else $("accessError").style.display="block";
 }
 
-/* PAIR */
 function updatePairUI(asset){
  $("pairName").textContent=asset.name;
- $("pairIcon").innerHTML=
- `<span class="flag-3d">${asset.flags[0]}</span>
-  <span class="flag-3d">${asset.flags[1]}</span>`;
+ $("pairIcon").innerHTML=`<span class="flag-3d">${asset.flags[0]}</span><span class="flag-3d">${asset.flags[1]}</span>`;
 }
 
-/* CHANGE ASSET */
 function changeAsset(){
  const index=Number($("assetSelect").value);
  selectedAsset=realAssets[index];
  updatePairUI(selectedAsset);
- currentPrice=null;
- previousPrice=null;
- priceHistory=[];
- candleHistory=[];
- pendingSignal=null;
- confirmationBusy=false;
- signal="WAIT";
- signalExpiry=0;
- lastSignalPrice=null;
- lastSignalDirection=null;
- lastSignalTime=null;
- signalArmed=false;
- lastSignalConfidence=0;
+ currentPrice=null;previousPrice=null;priceHistory=[];candleHistory=[];
+ pendingSignal=null;confirmationBusy=false;signal="WAIT";signalExpiry=0;
+ lastSignalPrice=null;lastSignalDirection=null;lastSignalTime=null;
+ signalArmed=false;lastSignalConfidence=0;
  $("currentPrice").textContent="--";
  $("priceChange").textContent="Loading market data...";
  $("signalDirection").textContent="WAIT";
@@ -1268,102 +359,61 @@ function changeAsset(){
  loadInitialHistory();
 }
 
-/* INIT */
 function initializePECO(){
  const select=$("assetSelect");
  select.innerHTML="";
  realAssets.forEach((asset,index)=>{
   const option=document.createElement("option");
-  option.value=index;
-  option.textContent=asset.name;
-  select.appendChild(option);
+  option.value=index;option.textContent=asset.name;select.appendChild(option);
  });
- select.value="0";
- selectedAsset=realAssets[0];
- updatePairUI(selectedAsset);
- loadInitialHistory();
- startPricePolling();
- startCandleWatcher();
- updateTimer();
+ select.value="0";selectedAsset=realAssets[0];updatePairUI(selectedAsset);
+ loadInitialHistory();startPricePolling();startCandleWatcher();updateTimer();
 }
 
-/* DATA */
 function extractBars(data){
- let bars=
- Array.isArray(data)?data:
- Array.isArray(data.data)?data.data:
- Array.isArray(data.ohlc)?data.ohlc:[];
- return bars
- .filter(bar=>bar.isOpen!==true)
- .sort((a,b)=>Number(a.openTime||a.time||a.timestamp||0)-Number(b.openTime||b.time||b.timestamp||0))
- .slice(-40);
+ let bars=Array.isArray(data)?data:Array.isArray(data.data)?data.data:Array.isArray(data.ohlc)?data.ohlc:[];
+ return bars.filter(bar=>bar.isOpen!==true)
+ .sort((a,b)=>Number(a.openTime||a.time||a.timestamp||0)-Number(b.openTime||b.time||b.timestamp||0)).slice(-40);
 }
+function barTime(bar){return Number(bar.openTime||bar.time||bar.timestamp||0)}
+function barClose(bar){return Number(bar.close??bar.c??bar.price??0)}
 
-function barTime(bar){
- return Number(bar.openTime||bar.time||bar.timestamp||0);
-}
-
-function barClose(bar){
- return Number(bar.close??bar.c??bar.price??0);
-}
-
-/* INITIAL HISTORY */
 async function loadInitialHistory(){
  try{
   dataLoading=true;
-  const response=await fetch(
-   `${REAL_API}${selectedAsset.symbol}/ohlc?interval=1m&limit=50`,
-   {cache:"no-store"}
-  );
+  const response=await fetch(`${REAL_API}${selectedAsset.symbol}/ohlc?interval=1m&limit=50`,{cache:"no-store"});
   if(!response.ok)throw new Error(`OHLC HTTP ${response.status}`);
   const bars=extractBars(await response.json());
   candleHistory=bars;
   priceHistory=bars.map(barClose).filter(p=>Number.isFinite(p)&&p>0);
   lastLoadedCandleTime=bars.length?barTime(bars[bars.length-1]):null;
-  await fetchPrice();
-  dataLoading=false;
+  await fetchPrice();dataLoading=false;
  }catch(error){
-  console.error("History error:",error);
-  dataLoading=false;
+  console.error("History error:",error);dataLoading=false;
   $("priceChange").textContent="Market data unavailable";
  }
 }
 
-/* PRICE */
 async function fetchPrice(){
  try{
-  const response=await fetch(
-   `${REAL_API}${selectedAsset.symbol}?allowStale=true`,
-   {cache:"no-store"}
-  );
+  const response=await fetch(`${REAL_API}${selectedAsset.symbol}?allowStale=true`,{cache:"no-store"});
   if(!response.ok)throw new Error(`Price HTTP ${response.status}`);
   const data=await response.json();
   const price=Number(data.mid??data.price??data.data?.mid??data.data?.price);
   if(!Number.isFinite(price)||price<=0)return;
-  previousPrice=currentPrice;
-  currentPrice=price;
-  priceHistory.push(price);
-  if(priceHistory.length>40)priceHistory=priceHistory.slice(-40);
+  previousPrice=currentPrice;currentPrice=price;
+  priceHistory.push(price);if(priceHistory.length>40)priceHistory=priceHistory.slice(-40);
   updatePriceUI();
- }catch(error){
-  console.error("Price error:",error);
- }
+ }catch(error){console.error("Price error:",error)}
 }
 
-/* PRICE UI */
 function updatePriceUI(){
- if(currentPrice===null){
-  $("currentPrice").textContent="--";
-  return;
- }
+ if(currentPrice===null){$("currentPrice").textContent="--";return}
  $("currentPrice").textContent=currentPrice.toFixed(currentPrice<10?5:3);
  if(previousPrice===null){
-  $("priceChange").textContent="LIVE MARKET PRICE";
-  $("priceChange").className="price-change";
-  return;
+  $("priceChange").textContent="LIVE MARKET PRICE";$("priceChange").className="price-change";return;
  }
- const diff=currentPrice-previousPrice;
- const percent=previousPrice?(diff/previousPrice)*100:0;
+ const diff=currentPrice-previousPrice,percent=previousPrice?(diff/previousPrice)*100:0;
  if(diff>0){
   $("priceChange").textContent=`▲ ${diff.toFixed(5)} (${percent.toFixed(3)}%)`;
   $("priceChange").className="price-change up";
@@ -1371,82 +421,53 @@ function updatePriceUI(){
   $("priceChange").textContent=`▼ ${Math.abs(diff).toFixed(5)} (${Math.abs(percent).toFixed(3)}%)`;
   $("priceChange").className="price-change down";
  }else{
-  $("priceChange").textContent="PRICE UNCHANGED";
-  $("priceChange").className="price-change";
+  $("priceChange").textContent="PRICE UNCHANGED";$("priceChange").className="price-change";
  }
 }
 
-/* POLLING */
 function startPricePolling(){
  if(priceTimer)clearInterval(priceTimer);
- fetchPrice();
- priceTimer=setInterval(fetchPrice,5000);
+ fetchPrice();priceTimer=setInterval(fetchPrice,5000);
 }
-
 function startCandleWatcher(){
  if(candleTimer)clearInterval(candleTimer);
- refreshCandles();
- candleTimer=setInterval(refreshCandles,5000);
+ refreshCandles();candleTimer=setInterval(refreshCandles,5000);
 }
 
-/* CANDLES */
 async function refreshCandles(){
  try{
-  const response=await fetch(
-   `${REAL_API}${selectedAsset.symbol}/ohlc?interval=1m&limit=40`,
-   {cache:"no-store"}
-  );
+  const response=await fetch(`${REAL_API}${selectedAsset.symbol}/ohlc?interval=1m&limit=40`,{cache:"no-store"});
   if(!response.ok)throw new Error(`OHLC HTTP ${response.status}`);
-  const bars=extractBars(await response.json());
-  candleHistory=bars;
+  const bars=extractBars(await response.json());candleHistory=bars;
   const closes=bars.map(barClose).filter(p=>Number.isFinite(p)&&p>0);
   if(closes.length)priceHistory=closes.slice(-40);
-  const latestTime=bars.length?barTime(bars[bars.length-1]):null;
-  lastLoadedCandleTime=latestTime;
- }catch(error){
-  console.error("Candle refresh error:",error);
- }
+  lastLoadedCandleTime=bars.length?barTime(bars[bars.length-1]):null;
+ }catch(error){console.error("Candle refresh error:",error)}
 }
 
-/* ANALYSIS */
 function deepAnalyzeMarket(){
- if(priceHistory.length<12){
-  return{direction:"WAIT",confidence:0,trend:"COLLECTING DATA",momentum:"WAITING",pattern:"WAITING",score:0};
- }
- const prices=priceHistory.slice(-12);
- let score=0;
+ if(priceHistory.length<12)return{direction:"WAIT",confidence:0,trend:"COLLECTING DATA",momentum:"WAITING",pattern:"WAITING",score:0};
+ const prices=priceHistory.slice(-12);let score=0;
  const change=prices[prices.length-1]-prices[0];
- if(change>0)score+=2;
- else if(change<0)score-=2;
- const recent=prices.slice(-4);
- const old=prices.slice(0,4);
+ if(change>0)score+=2;else if(change<0)score-=2;
+ const recent=prices.slice(-4),old=prices.slice(0,4);
  const recentAvg=recent.reduce((a,b)=>a+b,0)/recent.length;
  const oldAvg=old.reduce((a,b)=>a+b,0)/old.length;
- if(recentAvg>oldAvg)score+=2;
- else if(recentAvg<oldAvg)score-=2;
- const p1=prices.at(-1);
- const p2=prices.at(-2);
- const p3=prices.at(-3);
+ if(recentAvg>oldAvg)score+=2;else if(recentAvg<oldAvg)score-=2;
+ const p1=prices.at(-1),p2=prices.at(-2),p3=prices.at(-3);
  if(p1>p2&&p2>p3)score+=2;
  if(p1<p2&&p2<p3)score-=2;
  const shortMove=prices.at(-1)-prices.at(-5);
- if(shortMove>0)score++;
- else if(shortMove<0)score--;
+ if(shortMove>0)score++;else if(shortMove<0)score--;
  let totalMove=0;
- for(let i=1;i<prices.length;i++){
-  totalMove+=Math.abs(prices[i]-prices[i-1]);
- }
+ for(let i=1;i<prices.length;i++)totalMove+=Math.abs(prices[i]-prices[i-1]);
  const avgMove=totalMove/(prices.length-1);
- if(avgMove>0&&Math.abs(change)>avgMove*1.5){
-  score+=change>0?1:-1;
- }
+ if(avgMove>0&&Math.abs(change)>avgMove*1.5)score+=change>0?1:-1;
  let direction="WAIT";
- if(score>=3)direction="CALL";
- else if(score<=-3)direction="PUT";
+ if(score>=3)direction="CALL";else if(score<=-3)direction="PUT";
  const confidence=direction==="WAIT"?50:Math.min(95,60+Math.abs(score)*4);
  return{
-  direction,
-  confidence,
+  direction,confidence,
   trend:change>0?"BULLISH":change<0?"BEARISH":"SIDEWAYS",
   momentum:recentAvg>oldAvg?"BULLISH":recentAvg<oldAvg?"BEARISH":"NEUTRAL",
   pattern:p1>p2&&p2>p3?"3 CANDLE BULLISH":p1<p2&&p2<p3?"3 CANDLE BEARISH":"MIXED",
@@ -1454,159 +475,106 @@ function deepAnalyzeMarket(){
  };
 }
 
-/* GENERATE */
 function manualAnalyze(){
  if(signal==="CALL"||signal==="PUT"||pendingSignal)return;
- const btn=$("generateBtn");
- const now=Date.now();
+ const btn=$("generateBtn"),now=Date.now();
  const nextCandleStart=Math.floor(now/60000)*60000+60000;
  pendingSignal={requestedAt:now,startTime:nextCandleStart};
- btn.textContent="FINDING CONFIRMATION";
- btn.disabled=true;
- btn.classList.add("waiting");
+ btn.textContent="FINDING CONFIRMATION";btn.disabled=true;btn.classList.add("waiting");
  $("signalStatus").textContent="FINDING CONFIRMATION";
- $("liveState").textContent="FINDING CONFIRMATION";
- $("pairBadge").textContent="WAIT";
- $("signalDirection").textContent="WAIT";
- $("signalIcon").textContent="—";
- $("tradeCaption").textContent="⌄  WAIT FOR CANDLE";
- $("signalResult").textContent="WAIT";
- $("confidenceNumber").textContent="--%";
- $("confidenceLevel").textContent="Waiting for confirmation";
+ $("liveState").textContent="FINDING CONFIRMATION";$("pairBadge").textContent="WAIT";
+ $("signalDirection").textContent="WAIT";$("signalIcon").textContent="—";
+ $("tradeCaption").textContent="⌄  WAIT FOR CANDLE";$("signalResult").textContent="WAIT";
+ $("confidenceNumber").textContent="--%";$("confidenceLevel").textContent="Waiting for confirmation";
  $("confidenceNote").textContent="Signal will be confirmed at the start of a new 1-minute candle.";
- $("confidenceProgress").style.strokeDashoffset=289;
- $("entryTime").textContent="--:--";
+ $("confidenceProgress").style.strokeDashoffset=289;$("entryTime").textContent="--:--";
  $("signalTimer").textContent="01:00";
- $("trendValue").textContent="CONFIRMING";
- $("momentumValue").textContent="CONFIRMING";
- $("patternValue").textContent="CONFIRMING";
+ $("trendValue").textContent="CONFIRMING";$("momentumValue").textContent="CONFIRMING";$("patternValue").textContent="CONFIRMING";
 }
 
-/* CANDLE START CONFIRMATION */
 async function confirmAtCandleStart(){
  if(!pendingSignal||confirmationBusy||signal==="CALL"||signal==="PUT")return;
  confirmationBusy=true;
  const candleStart=pendingSignal.startTime;
- await fetchPrice();
- await refreshCandles();
+ await fetchPrice();await refreshCandles();
  const result=deepAnalyzeMarket();
  $("trendValue").textContent=result.trend;
  $("momentumValue").textContent=result.momentum;
  $("patternValue").textContent=result.pattern;
  if(result.direction==="CALL"||result.direction==="PUT"){
-  activateConfirmedSignal(result,candleStart);
-  pendingSignal=null;
+  activateConfirmedSignal(result,candleStart);pendingSignal=null;
  }else{
-  const nextStart=Math.floor(Date.now()/60000)*60000+60000;
-  pendingSignal.startTime=nextStart;
+  pendingSignal.startTime=Math.floor(Date.now()/60000)*60000+60000;
   $("signalStatus").textContent="FINDING CONFIRMATION";
-  $("liveState").textContent="FINDING CONFIRMATION";
-  $("pairBadge").textContent="WAIT";
-  $("signalDirection").textContent="WAIT";
-  $("signalIcon").textContent="—";
+  $("liveState").textContent="FINDING CONFIRMATION";$("pairBadge").textContent="WAIT";
+  $("signalDirection").textContent="WAIT";$("signalIcon").textContent="—";
   $("tradeCaption").textContent="⌄  WAIT FOR CANDLE";
   $("confidenceNumber").textContent="--%";
   $("confidenceLevel").textContent="Waiting for confirmation";
   $("confidenceNote").textContent="No confirmed setup yet. Waiting for the next 1-minute candle.";
  }
- confirmationBusy=false;
- updateGenerateButton();
+ confirmationBusy=false;updateGenerateButton();
 }
 
-/* ACTIVATE CONFIRMED SIGNAL */
 function activateConfirmedSignal(result,candleStart){
- signal=result.direction;
- signalExpiry=candleStart+60000;
- lastSignalPrice=currentPrice;
- lastSignalDirection=signal;
- lastSignalTime=candleStart;
- signalArmed=true;
- lastSignalConfidence=result.confidence;
+ signal=result.direction;signalExpiry=candleStart+60000;
+ lastSignalPrice=currentPrice;lastSignalDirection=signal;lastSignalTime=candleStart;
+ signalArmed=true;lastSignalConfidence=result.confidence;
  $("signalCard").classList.remove("call-active","put-active");
  $("signalCard").classList.add(signal==="CALL"?"call-active":"put-active");
  $("signalStatus").textContent="LIVE SIGNAL";
  $("signalDirection").textContent=signal;
  $("signalConfidence").textContent=`AI CONFIDENCE: ${result.confidence}%`;
  $("entryTime").textContent=new Date(candleStart).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
- $("signalResult").textContent="ACTIVE";
- $("signalIcon").textContent=signal==="CALL"?"↑":"↓";
+ $("signalResult").textContent="ACTIVE";$("signalIcon").textContent=signal==="CALL"?"↑":"↓";
  $("tradeCaption").textContent=signal==="CALL"?"⌃  TRADE UP":"⌄  TRADE DOWN";
  $("confidenceNumber").textContent=`${result.confidence}%`;
  $("confidenceLevel").textContent=result.confidence>=80?"High conviction":"Moderate conviction";
  $("confidenceNote").textContent="AI conviction for this 1-minute setup.";
  $("confidenceProgress").style.strokeDashoffset=289-(289*result.confidence/100);
  $("tradeExplanation").innerHTML=`Place the trade at <strong style="color:#e9fff1">${$("entryTime").textContent}</strong> for a 1-minute expiry. This is a ${signal} analysis estimate, not a guaranteed outcome.`;
- $("liveState").textContent="SIGNAL LIVE";
- $("pairBadge").textContent=signal;
- addRecentSignal();
- updateGenerateButton();
+ $("liveState").textContent="SIGNAL LIVE";$("pairBadge").textContent=signal;
+ addRecentSignal();updateGenerateButton();
 }
 
-/* BUTTON STATE */
 function updateGenerateButton(){
  const btn=$("generateBtn");
  if(signal==="CALL"||signal==="PUT"){
-  btn.textContent="SIGNAL RUNNING";
-  btn.disabled=true;
-  btn.classList.remove("waiting");
-  return;
+  btn.textContent="SIGNAL RUNNING";btn.disabled=true;btn.classList.remove("waiting");return;
  }
  if(pendingSignal){
-  btn.textContent="FINDING CONFIRMATION";
-  btn.disabled=true;
-  btn.classList.add("waiting");
-  return;
+  btn.textContent="FINDING CONFIRMATION";btn.disabled=true;btn.classList.add("waiting");return;
  }
- btn.textContent="GENERATE SIGNAL";
- btn.disabled=false;
- btn.classList.remove("waiting");
+ btn.textContent="GENERATE SIGNAL";btn.disabled=false;btn.classList.remove("waiting");
 }
 
-/* TIMER */
 function updateTimer(){
  const timer=$("signalTimer");
- if(pendingSignal&&!confirmationBusy&&Date.now()>=pendingSignal.startTime){
-  confirmAtCandleStart();
- }
+ if(pendingSignal&&!confirmationBusy&&Date.now()>=pendingSignal.startTime)confirmAtCandleStart();
  if(signal==="CALL"||signal==="PUT"){
-  const remaining=Math.max(0,signalExpiry-Date.now());
-  const seconds=Math.ceil(remaining/1000);
+  const remaining=Math.max(0,signalExpiry-Date.now()),seconds=Math.ceil(remaining/1000);
   timer.textContent=`${String(Math.floor(seconds/60)).padStart(2,"0")}:${String(seconds%60).padStart(2,"0")}`;
   if(remaining<=0)finishSignal();
- }else{
-  timer.textContent="01:00";
- }
+ }else timer.textContent="01:00";
  requestAnimationFrame(updateTimer);
 }
 
-/* FINISH */
 function finishSignal(){
- checkSignalResult();
- signal="WAIT";
- signalExpiry=0;
- signalArmed=false;
- $("signalStatus").textContent="SIGNAL EXPIRED";
- $("signalResult").textContent="EXPIRED";
- $("signalDirection").textContent="WAIT";
- $("signalIcon").textContent="—";
+ checkSignalResult();signal="WAIT";signalExpiry=0;signalArmed=false;
+ $("signalStatus").textContent="SIGNAL EXPIRED";$("signalResult").textContent="EXPIRED";
+ $("signalDirection").textContent="WAIT";$("signalIcon").textContent="—";
  $("signalConfidence").textContent="AI CONFIDENCE: --";
  $("signalCard").classList.remove("call-active","put-active");
- $("tradeCaption").textContent="⌄  WAIT FOR SETUP";
- $("liveState").textContent="SIGNAL READY";
- $("pairBadge").textContent="READY";
- $("confidenceLevel").textContent="Waiting for signal";
+ $("tradeCaption").textContent="⌄  WAIT FOR SETUP";$("liveState").textContent="SIGNAL READY";
+ $("pairBadge").textContent="READY";$("confidenceLevel").textContent="Waiting for signal";
  $("confidenceNote").textContent="AI conviction for this 1-minute setup.";
- $("confidenceNumber").textContent="--%";
- $("confidenceProgress").style.strokeDashoffset=289;
- $("entryTime").textContent="--:--";
- updateGenerateButton();
+ $("confidenceNumber").textContent="--%";$("confidenceProgress").style.strokeDashoffset=289;
+ $("entryTime").textContent="--:--";updateGenerateButton();
 }
 
-/* RESULT */
 function checkSignalResult(){
  if(lastSignalPrice===null||!lastSignalDirection||currentPrice===null)return;
- const threshold=lastSignalPrice*0.00001;
- let result="DRAW";
+ const threshold=lastSignalPrice*0.00001;let result="DRAW";
  if(lastSignalDirection==="CALL"){
   if(currentPrice>lastSignalPrice+threshold)result="WIN";
   else if(currentPrice<lastSignalPrice-threshold)result="LOSS";
@@ -1614,14 +582,10 @@ function checkSignalResult(){
   if(currentPrice<lastSignalPrice-threshold)result="WIN";
   else if(currentPrice>lastSignalPrice+threshold)result="LOSS";
  }
- if(result==="WIN")totalWins++;
- else if(result==="LOSS")totalLosses++;
- else totalDraws++;
- $("signalResult").textContent=result;
- updateStats();
+ if(result==="WIN")totalWins++;else if(result==="LOSS")totalLosses++;else totalDraws++;
+ $("signalResult").textContent=result;updateStats();
 }
 
-/* RECENT */
 function addRecentSignal(){
  recentSignals.unshift({
   direction:lastSignalDirection,
@@ -1633,34 +597,17 @@ function addRecentSignal(){
 
 function renderRecentSignals(){
  const list=$("recentList");
- if(!recentSignals.length){
-  list.innerHTML='<div class="recent-empty">No signals yet</div>';
-  return;
- }
- list.innerHTML=recentSignals.map(item=>
-  `<div class="recent-item">
-    <div class="recent-left">
-     <div class="recent-dot" style="${item.direction==="PUT"?"background:#ff4055;box-shadow:0 0 10px #ff405599":""}"></div>
-     <div class="recent-direction">${item.direction}</div>
-    </div>
-    <div class="recent-time">${item.time}</div>
-   </div>`
- ).join("");
+ if(!recentSignals.length){list.innerHTML='<div class="recent-empty">No signals yet</div>';return}
+ list.innerHTML=recentSignals.map(item=>`<div class="recent-item"><div class="recent-left"><div class="recent-dot" style="${item.direction==="PUT"?"background:#ff4055;box-shadow:0 0 10px #ff405599":""}"></div><div class="recent-direction">${item.direction}</div></div><div class="recent-time">${item.time}</div></div>`).join("");
 }
 
-/* STATS */
 function updateStats(){
- $("winCount").textContent=totalWins;
- $("lossCount").textContent=totalLosses;
+ $("winCount").textContent=totalWins;$("lossCount").textContent=totalLosses;
  const total=totalWins+totalLosses;
  $("accuracy").textContent=`${total?Math.round(totalWins/total*100):0}%`;
 }
 
-/* ENTER KEY */
-$("accessKey").addEventListener("keydown",e=>{
- if(e.key==="Enter")checkAccess();
-});
+$("accessKey").addEventListener("keydown",e=>{if(e.key==="Enter")checkAccess()});
 </script>
-
 </body>
 </html>
